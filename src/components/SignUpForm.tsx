@@ -1,11 +1,10 @@
 import { useState } from "react";
 
-export const SignInForm = () => {
+export const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordReview, setPasswordReview] = useState("");
 
-  const form = { email: email, password: password };
+  // const form = { email: email, password: password };
 
   return (
     <div className="absolute top-2/4 left-2/4 -translate-x-1/2 -translate-y-1/2">
@@ -37,22 +36,11 @@ export const SignInForm = () => {
           onChange={(e) => setPassword(() => e.target.value)}
           className="border-2 border-violet-800 py-1 px-4 rounded-md"
         />
-        <label htmlFor="password-review" className="py-2  text-purple-800">
-          Again write password
-        </label>
-        <input
-          id="password-review"
-          type="password"
-          required
-          value={passwordReview}
-          onChange={(e) => setPasswordReview(() => e.target.value)}
-          className="border-2 border-violet-800 py-1 px-4 rounded-md"
-        />
         <button
           className="bg-violet-800 text-fuchsia-50 mt-6 p-2 rounded-full"
           type="submit"
-          onClick={() => POST("/api/v1/auth/sign-up", JSON.stringify(form))}
-          onSubmit={(e) => createAccount(e)}
+          // onClick={() => POST("/api/v1/auth/sign-up", JSON.stringify(form))}
+          // onSubmit={(e) => createAccount(e)}
         >
           create account
         </button>
@@ -60,24 +48,3 @@ export const SignInForm = () => {
     </div>
   );
 };
-
-const createAccount = (e: React.FormEvent<HTMLButtonElement>) => {
-  console.log("create account", { e });
-  e.preventDefault();
-  // POST("/api/v1/auth/sign-up");
-};
-
-const POST = async <R, P>(url: string, body: P): Promise<R> => {
-  const res = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: { "Content-type": "application/json; charset=UTF-8" },
-  });
-  const data = res.json();
-  return data;
-};
-
-// const
-
-// POST: /api/v1/auth/sign-up
-// POST: /api/v1/auth/sign-in
