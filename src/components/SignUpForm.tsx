@@ -48,3 +48,19 @@ export const SignUpForm = () => {
     </div>
   );
 };
+
+const createAccount = (e: React.FormEvent<HTMLButtonElement>) => {
+  console.log("create account", { e });
+  e.preventDefault();
+  // POST("/api/v1/auth/sign-up");
+};
+
+const POST = async <R, P>(url: string, body: P): Promise<R> => {
+  const res = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: { "Content-type": "application/json; charset=UTF-8" },
+  });
+  const data = res.json();
+  return data;
+};

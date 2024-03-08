@@ -13,8 +13,10 @@ type NoteProps = {
 export const Note = ({ tag, content }: NoteProps) => {
   const [mouseInNote, setMouseInNote] = useState(false);
 
+  // change href from <a></a>
   return (
-    <div
+    <a
+      href="/api/note/id"
       className="w-3/4 hover:bg-pink-600 hover:opacity-70 hover:rounded-3xl"
       onMouseOver={() => setMouseInNote(true)}
       onMouseOut={() => setMouseInNote(false)}
@@ -54,6 +56,6 @@ export const Note = ({ tag, content }: NoteProps) => {
           {content}
         </p>
       </div>
-    </div>
+    </a>
   );
 };

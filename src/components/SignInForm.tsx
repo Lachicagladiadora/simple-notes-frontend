@@ -57,14 +57,20 @@ export const SignInForm = () => {
           create account
         </button>
       </form>
+      <button onClick={createAccount}>post</button>
     </div>
   );
 };
 
-const createAccount = (e: React.FormEvent<HTMLButtonElement>) => {
-  console.log("create account", { e });
+const createAccount = async (e: React.FormEvent<HTMLButtonElement>) => {
+  console.log("create account");
   e.preventDefault();
-  // POST("/api/v1/auth/sign-up");
+  const response = await POST("http://localhost:4000/api/v1/auth/sign-up", {
+    email: "emailfdg",
+    username: "username",
+    password: "password",
+  });
+  console.log({ response });
 };
 
 const POST = async <R, P>(url: string, body: P): Promise<R> => {
