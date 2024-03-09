@@ -1,16 +1,8 @@
 // import { SignInForm } from "./components/SignInForm";
 
-import {
-  DocumentTextIcon,
-  PlusCircleIcon,
-  TagIcon,
-} from "@heroicons/react/24/outline";
 // import { Note } from "./components/Note";
-import { Searcher } from "./components/Searcher";
-import { ButtonForSection } from "./components/ButtonForSection";
-import { EditTag } from "./components/EditTag";
-import { EditNote } from "./components/EditNote";
-import { SignUpForm } from "./components/SignUpForm";
+// import { Searcher } from "./components/Searcher";
+
 import { SignInForm } from "./components/SignInForm";
 
 // import { SignUpForm } from "./components/SignUpForm";
@@ -32,30 +24,8 @@ function App() {
       <main className="py-12 flex flex-col justify-center items-center">
         {/* <SignInForm /> */}
         {/* <SignUpForm /> */}
-        <Searcher />
-        <div className="w-full flex gap-4 justify-center">
-          <ButtonForSection>
-            <DocumentTextIcon className="h-6" />
-            notes
-          </ButtonForSection>
-          <ButtonForSection>
-            <PlusCircleIcon className="h-6" />
-            new note
-          </ButtonForSection>
-          <ButtonForSection>
-            <PlusCircleIcon className="h-6" />
-            new tag
-          </ButtonForSection>
-          <ButtonForSection>
-            <TagIcon className="h-6" />
-            tags
-          </ButtonForSection>
+        {/* <Searcher /> */}
 
-          {/* <button className="border py-1 px-2 rounded-full bg-purple-800 text-fuchsia-50 capitalize text-base flex gap-1 items-center justify-center hover:bg-fuchsia-50 hover:text-purple-800 hover:border-purple-800">
-            <UserCircleIcon className="h-5" />
-            profile
-          </button> */}
-        </div>
         <SignInForm />
         {/* <section className=" py-8 flex gap-8 flex-col items-center text-sm w-full justify-center">
           <Note content={NOTE_TEST + NOTE_TEST} tag="#fruit" />
