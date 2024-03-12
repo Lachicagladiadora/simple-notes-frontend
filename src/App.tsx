@@ -3,7 +3,7 @@
 // import { Note } from "./components/Note";
 // import { Searcher } from "./components/Searcher";
 
-import { SignInForm } from "./components/SignInForm";
+import { SignInForm } from "./components/SignIUpForm";
 
 // import { SignUpForm } from "./components/SignUpForm";
 
