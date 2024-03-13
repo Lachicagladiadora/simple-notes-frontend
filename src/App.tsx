@@ -3,7 +3,7 @@
 // import { Note } from "./components/Note";
 // import { Searcher } from "./components/Searcher";
 
-import { SignInForm } from "./components/SignIUpForm";
+import { SignUpForm } from "./components/SignUpForm";
 
 // import { SignUpForm } from "./components/SignUpForm";
 
@@ -26,7 +26,7 @@ function App() {
         {/* <SignUpForm /> */}
         {/* <Searcher /> */}
 
-        <SignInForm />
+        <SignUpForm />
         {/* <section className=" py-8 flex gap-8 flex-col items-center text-sm w-full justify-center">
           <Note content={NOTE_TEST + NOTE_TEST} tag="#fruit" />
           <Note content={NOTE_TEST} tag="#house" />

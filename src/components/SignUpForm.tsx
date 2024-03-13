@@ -1,14 +1,7 @@
 import { useState } from "react";
+import { createAccount } from "../utils";
 
-type UserDataType = {
-  emailUser: string;
-  userNameU: string;
-  passwordUser: string;
-};
-
-// const dataForm = { email: email, userName: userName, password: password };
-
-export const SignInForm = () => {
+export const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [userName, setUserNAme] = useState("");
   const [password, setPassword] = useState("");
@@ -87,33 +80,3 @@ export const SignInForm = () => {
     </div>
   );
 };
-
-type CreateAccountProps = {
-  e: React.FormEvent<HTMLButtonElement>;
-  userData: UserDataType | null;
-};
-const createAccount = async ({ e, userData }: CreateAccountProps) => {
-  if (userData === null) console.log("userData is null");
-
-  e.preventDefault();
-  const response = await POST(
-    "http://localhost:4000/api/v1/auth/sign-up",
-    userData
-  );
-  console.log({ response });
-};
-
-const POST = async <R, P>(url: string, body: P): Promise<R> => {
-  const res = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: { "Content-type": "application/json; charset=UTF-8" },
-  });
-  const data = res.json();
-  return data;
-};
-
-// const
-
-// POST: /api/v1/auth/sign-up
-// POST: /api/v1/auth/sign-in
