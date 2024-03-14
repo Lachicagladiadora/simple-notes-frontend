@@ -13,7 +13,31 @@ export const SignUpForm = () => {
         Sign Up
       </h1>
 
-      <form method="POST" action="" className="flex flex-col">
+      <form
+        className="flex flex-col"
+        onSubmit={(e) =>
+          createAccount({
+            e: e,
+            userData: {
+              email: email,
+              username: userName,
+              password: password,
+            },
+          })
+        }
+      >
+        <label htmlFor="userName" className="py-2  text-purple-800">
+          Username
+        </label>
+        <input
+          id="userName"
+          type="text"
+          required
+          value={userName}
+          onChange={(e) => setUserNAme(() => e.target.value)}
+          className="border-2 border-violet-800 py-1 px-4 rounded-md"
+        />
+
         <label htmlFor="email" className="py-2  text-purple-800">
           Email
         </label>
@@ -23,18 +47,6 @@ export const SignUpForm = () => {
           required
           value={email}
           onChange={(e) => setEmail(() => e.target.value)}
-          className="border-2 border-violet-800 py-1 px-4 rounded-md"
-        />
-
-        <label htmlFor="userName" className="py-2  text-purple-800">
-          Username
-        </label>
-        <input
-          id="userName"
-          type="email"
-          required
-          value={userName}
-          onChange={(e) => setUserNAme(() => e.target.value)}
           className="border-2 border-violet-800 py-1 px-4 rounded-md"
         />
 
@@ -60,20 +72,7 @@ export const SignUpForm = () => {
           onChange={(e) => setPasswordReview(() => e.target.value)}
           className="border-2 border-violet-800 py-1 px-4 rounded-md"
         />
-        <button
-          className="bg-violet-800 text-fuchsia-50 mt-6 p-2 rounded-full"
-          type="submit"
-          onSubmit={(e) =>
-            createAccount({
-              e: e,
-              userData: {
-                emailUser: email,
-                userNameU: userName,
-                passwordUser: password,
-              },
-            })
-          }
-        >
+        <button className="bg-violet-800 text-fuchsia-50 mt-6 p-2 rounded-full">
           Create account
         </button>
       </form>
