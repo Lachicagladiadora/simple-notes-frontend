@@ -11,15 +11,15 @@ type SignInInput = {
   password: string;
 };
 
-type CreateAccountProps = {
+type CreateAccountInput = {
   e: React.FormEvent<HTMLFormElement>;
   userData: UserDataType;
 };
 
+// SIGN UP
 type ResponseDataType = { message: string } | string;
 
-// SIGN UP
-export const createAccount = async ({ e, userData }: CreateAccountProps) => {
+export const createAccount = async ({ e, userData }: CreateAccountInput) => {
   console.log("hello 1");
   e.preventDefault();
 
@@ -49,13 +49,13 @@ export const createAccount = async ({ e, userData }: CreateAccountProps) => {
   // }
 };
 
-type signInProps = {
+// SIGN IN
+type signInInput = {
   e: React.FormEvent<HTMLButtonElement>;
   userData: SignInInput | null;
 };
 
-// SIGN IN
-export const signIn = async ({ e, userData }: signInProps) => {
+export const signIn = async ({ e, userData }: signInInput) => {
   e.preventDefault();
   const response: ResponseDataType = await POST(
     "http://localhost:4000/api/v1/auth/sign-in",
@@ -64,12 +64,12 @@ export const signIn = async ({ e, userData }: signInProps) => {
   console.log(response);
 };
 
+// SIGN OUT
 type signOutProps = {
   e: React.FormEvent<HTMLButtonElement>;
   userData: UserDataType | null;
 };
 
-// SIGN OUT
 export const signOut = async ({ e, userData }: signOutProps) => {
   e.preventDefault();
   const response: ResponseDataType = await POST(
@@ -81,6 +81,50 @@ export const signOut = async ({ e, userData }: signOutProps) => {
 
 // TAGS
 
+type PostTagInput = {
+  e: React.FormEvent<HTMLButtonElement>;
+  newTag: { userId: string; tag: string };
+};
+
+export const postTag = async ({ e, newTag }: PostTagInput) => {
+  console.log("postTag");
+  e.preventDefault();
+  const response: ResponseDataType = await POST(
+    "http://localhost:4000/api/v1/user/:user",
+    newTag
+  );
+  console.log({ response });
+};
+
+export const getTag = () => {
+  console.log("getTag");
+  // e.preventDefault();
+  // const response: ResponseDataType = await POST(
+  //   "http://localhost:4000/api/v1/user/:user"
+  // );
+  // console.log({ response });
+};
+
+export const updateTag = () => {
+  console.log("updateTag");
+};
+
+export const deleteTag = () => {
+  console.log("deleteTag");
+};
+
 // NOTES
+export const postNotes = () => {
+  console.log("postNotes");
+};
+export const getNotes = () => {
+  console.log("getNotes");
+};
+export const updateNotes = () => {
+  console.log("updateNotes");
+};
+export const deleteNotes = () => {
+  console.log("deleteNotes");
+};
 
 // todo: save token in local storage and access with token
