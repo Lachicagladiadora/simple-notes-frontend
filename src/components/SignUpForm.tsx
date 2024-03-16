@@ -6,6 +6,8 @@ export const SignUpForm = () => {
   const [userName, setUserNAme] = useState("");
   const [password, setPassword] = useState("");
   const [passwordReview, setPasswordReview] = useState("");
+  const [refreshToken, setRefreshToken] = useState("");
+  const [accessToken, setAccessToken] = useState("");
 
   return (
     <div className="absolute top-2/4 left-2/4 -translate-x-1/2 -translate-y-1/2">

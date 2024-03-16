@@ -1,42 +1,58 @@
 import { POST } from "./fetch.utils";
 
+// SIGN UP
 type UserDataType = {
   email: string;
   username: string;
   password: string;
 };
 
+type CreateAccountInput = {
+  e: React.FormEvent<HTMLFormElement>;
+  // headers: string;
+  userData: UserDataType;
+  setAccessToken: React.Dispatch<React.SetStateAction<string>>;
+  setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
+};
+// todo: pasar el token y ver que responde
+
+type ResponseDataType = { message: string } | string;
+
 type SignInInput = {
   email: string;
   password: string;
 };
 
-type CreateAccountInput = {
-  e: React.FormEvent<HTMLFormElement>;
-  userData: UserDataType;
+type SignInOutput = {
+  accessToken: string;
+  auth: boolean;
+  message: string;
+  refreshToken: string;
+  user: string;
 };
 
-// SIGN UP
-type ResponseDataType = { message: string } | string;
-
 export const createAccount = async ({ e, userData }: CreateAccountInput) => {
-  console.log("hello 1");
+  // console.log("hello 1");
   e.preventDefault();
 
   if (!userData.email || !userData.username || !userData.password)
     return console.log("userData is null");
 
-  console.log("hello 2");
+  // console.log("hello 2");
   const response: ResponseDataType = await POST(
     "http://localhost:4000/api/v1/auth/sign-up",
+    // headers: {},
     userData
   );
-  console.log(response);
-  const signIn = await POST<string, SignInInput>(
+
+  console.log({ response });
+
+  const responseSignIn = await POST<SignInOutput, SignInInput>(
     "http://localhost:4000/api/v1/auth/sign-in",
     { email: userData?.email, password: userData?.password }
   );
-  console.log(signIn);
+  console.log({ responseSignIn }, responseSignIn.accessToken);
+
   // try {
   //   // if (response === "user was created") console.log({ response });
   //   console.log("hello 3");
@@ -57,11 +73,13 @@ type signInInput = {
 
 export const signIn = async ({ e, userData }: signInInput) => {
   e.preventDefault();
-  const response: ResponseDataType = await POST(
+  const responseSignIn: ResponseDataType = await POST(
     "http://localhost:4000/api/v1/auth/sign-in",
     userData
   );
-  console.log(response);
+  console.log(responseSignIn);
+  // const responseObject = responseSignIn.accessToken;
+  // console.log(responseObject);
 };
 
 // SIGN OUT
@@ -80,7 +98,6 @@ export const signOut = async ({ e, userData }: signOutProps) => {
 };
 
 // TAGS
-
 type PostTagInput = {
   e: React.FormEvent<HTMLButtonElement>;
   newTag: { userId: string; tag: string };
