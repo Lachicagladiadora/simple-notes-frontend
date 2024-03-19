@@ -1,6 +1,19 @@
 import { useState } from "react";
+import { signIn } from "../utils";
 
-export const SignInForm = () => {
+type SignInFormInput = {
+  refreshToken: string;
+  setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
+  accessToken: string;
+  setAccessToken: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export const SignInForm = ({
+  accessToken,
+  refreshToken,
+  setAccessToken,
+  setRefreshToken,
+}: SignInFormInput) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,7 +25,24 @@ export const SignInForm = () => {
         Sign In
       </h1>
 
-      <form method="POST" action="" className="flex flex-col">
+      <form
+        method="POST"
+        action=""
+        className="flex flex-col"
+        onSubmit={(e) =>
+          signIn({
+            e: e,
+            userData: {
+              email: email,
+              password: password,
+            },
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            setAccessToken: setAccessToken,
+            setRefreshToken: setRefreshToken,
+          })
+        }
+      >
         <label htmlFor="email" className="py-2  text-purple-800">
           Email
         </label>
@@ -38,11 +68,11 @@ export const SignInForm = () => {
         />
         <button
           className="bg-violet-800 text-fuchsia-50 mt-6 p-2 rounded-full"
-          type="submit"
+          // type="submit"
           // onClick={() => POST("/api/v1/auth/sign-up", JSON.stringify(form))}
           // onSubmit={(e) => createAccount(e)}
         >
-          create account
+          Sign in
         </button>
       </form>
     </div>

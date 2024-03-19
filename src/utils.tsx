@@ -18,12 +18,13 @@ type CreateAccountInput = {
 
 type ResponseDataType = { message: string } | string;
 
-type SignInInput = {
+// sing in types
+type AutomaticSignInInput = {
   email: string;
   password: string;
 };
 
-type SignInOutput = {
+type AutomaticSignInOutput = {
   accessToken: string;
   auth: boolean;
   message: string;
@@ -31,7 +32,12 @@ type SignInOutput = {
   user: string;
 };
 
-export const createAccount = async ({ e, userData }: CreateAccountInput) => {
+export const createAccount = async ({
+  e,
+  userData,
+  setAccessToken,
+  setRefreshToken,
+}: CreateAccountInput) => {
   // console.log("hello 1");
   e.preventDefault();
 
@@ -47,11 +53,19 @@ export const createAccount = async ({ e, userData }: CreateAccountInput) => {
 
   console.log({ response });
 
-  const responseSignIn = await POST<SignInOutput, SignInInput>(
-    "http://localhost:4000/api/v1/auth/sign-in",
-    { email: userData?.email, password: userData?.password }
-  );
-  console.log({ responseSignIn }, responseSignIn.accessToken);
+  const responseSignInAutomatic = await POST<
+    AutomaticSignInOutput,
+    AutomaticSignInInput
+  >("http://localhost:4000/api/v1/auth/sign-in", {
+    email: userData?.email,
+    password: userData?.password,
+  });
+  const idUser = responseSignInAutomatic.user;
+  console.log({ idUser });
+  // console.log("user ID", responseSignIn.user);
+  // return responseSignIn;
+  setAccessToken(responseSignInAutomatic.accessToken);
+  setRefreshToken(responseSignInAutomatic.refreshToken);
 
   // try {
   //   // if (response === "user was created") console.log({ response });
@@ -66,20 +80,46 @@ export const createAccount = async ({ e, userData }: CreateAccountInput) => {
 };
 
 // SIGN IN
-type signInInput = {
-  e: React.FormEvent<HTMLButtonElement>;
-  userData: SignInInput | null;
+type SignInInput = {
+  e: React.FormEvent<HTMLFormElement>;
+  userData: AutomaticSignInInput | null;
+  refreshToken: string;
+  setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
+  accessToken: string;
+  setAccessToken: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export const signIn = async ({ e, userData }: signInInput) => {
+type SignInOutput = AutomaticSignInOutput;
+
+type ResponseSignIn = AutomaticSignInOutput;
+
+type SignInOptions = {
+  headers?: { refreshToken?: string };
+  body: AutomaticSignInInput | null;
+};
+
+export const signIn = async ({
+  e,
+  userData,
+  // accessToken,
+  refreshToken,
+  setAccessToken,
+  setRefreshToken,
+}: // setRefreshToken,
+SignInInput) => {
   e.preventDefault();
-  const responseSignIn: ResponseDataType = await POST(
-    "http://localhost:4000/api/v1/auth/sign-in",
-    userData
-  );
-  console.log(responseSignIn);
+  const responseSignIn: ResponseSignIn = await POST<
+    SignInOutput,
+    SignInOptions
+  >("http://localhost:4000/api/v1/auth/sign-in", {
+    body: userData,
+    headers: { refreshToken: refreshToken },
+  });
+  console.log({ responseSignIn });
   // const responseObject = responseSignIn.accessToken;
   // console.log(responseObject);
+  setAccessToken(responseSignIn.accessToken);
+  setRefreshToken(responseSignIn.refreshToken);
 };
 
 // SIGN OUT

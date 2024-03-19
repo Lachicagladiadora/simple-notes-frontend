@@ -1,13 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createAccount } from "../utils";
 
-export const SignUpForm = () => {
+type SignUpFormInput = {
+  refreshToken: string;
+  setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
+  accessToken: string;
+  setAccessToken: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export const SignUpForm = ({
+  accessToken,
+  refreshToken,
+  setAccessToken,
+  setRefreshToken,
+}: SignUpFormInput) => {
   const [email, setEmail] = useState("");
   const [userName, setUserNAme] = useState("");
   const [password, setPassword] = useState("");
   const [passwordReview, setPasswordReview] = useState("");
-  const [refreshToken, setRefreshToken] = useState("");
-  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    const tokensData = {
+      ultimateRefreshToken: refreshToken,
+      ultimateAccessToken: accessToken,
+    };
+    localStorage.setItem("Tokens Data", JSON.stringify(tokensData));
+  }, [accessToken, refreshToken]);
 
   return (
     <div className="absolute top-2/4 left-2/4 -translate-x-1/2 -translate-y-1/2">
@@ -25,6 +43,8 @@ export const SignUpForm = () => {
               username: userName,
               password: password,
             },
+            setRefreshToken,
+            setAccessToken,
           })
         }
       >
