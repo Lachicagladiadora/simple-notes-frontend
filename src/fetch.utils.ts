@@ -2,19 +2,34 @@
 //   headers?: { refreshToken?: string };
 //   body: AutomaticSignInInput | null;
 // }
-const options = {
-  headers: string,
-  body,
-};
+// const options = {
+//   headers: string,
+//   body,
+// };
 //  todo: modificar el tipado generico para que se asigne debidamente el header
-
-export const POST = async <R, P>(url: string, options: P): Promise<R> => {
+export const POST_SIGN_IN = async <R, P>(
+  url: string,
+  { body, headers }: P
+): Promise<R> => {
   const res = await fetch(url, {
     method: "POST",
-    body: JSON.stringify(options),
+    body: JSON.stringify(body),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
-      Authorization: `Bearer ${options}`,
+      Authorization: `Bearer ${headers}`,
+    },
+  });
+  const data = res.json();
+  return data;
+};
+
+export const POST = async <R, P>(url: string, body: P): Promise<R> => {
+  const res = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      // Authorization: `Bearer ${body}`,
     },
   });
   const data = res.json();

@@ -2,15 +2,17 @@ import { useState } from "react";
 import { signIn } from "../utils";
 
 type SignInFormInput = {
-  refreshToken: string;
-  setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
   accessToken: string;
+  refreshToken: string;
+  setAuth: React.Dispatch<React.SetStateAction<boolean>>;
   setAccessToken: React.Dispatch<React.SetStateAction<string>>;
+  setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const SignInForm = ({
   accessToken,
   refreshToken,
+  setAuth,
   setAccessToken,
   setRefreshToken,
 }: SignInFormInput) => {
@@ -38,6 +40,7 @@ export const SignInForm = ({
             },
             accessToken: accessToken,
             refreshToken: refreshToken,
+            setAuth: setAuth,
             setAccessToken: setAccessToken,
             setRefreshToken: setRefreshToken,
           })

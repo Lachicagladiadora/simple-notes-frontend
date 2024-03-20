@@ -1,4 +1,4 @@
-import { POST } from "./fetch.utils";
+import { POST, POST_SIGN_IN } from "./fetch.utils";
 
 // SIGN UP
 type UserDataType = {
@@ -11,6 +11,7 @@ type CreateAccountInput = {
   e: React.FormEvent<HTMLFormElement>;
   // headers: string;
   userData: UserDataType;
+  setAuth: React.Dispatch<React.SetStateAction<boolean>>;
   setAccessToken: React.Dispatch<React.SetStateAction<string>>;
   setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -35,6 +36,7 @@ type AutomaticSignInOutput = {
 export const createAccount = async ({
   e,
   userData,
+  setAuth,
   setAccessToken,
   setRefreshToken,
 }: CreateAccountInput) => {
@@ -64,9 +66,10 @@ export const createAccount = async ({
   console.log({ idUser });
   // console.log("user ID", responseSignIn.user);
   // return responseSignIn;
+
   setAccessToken(responseSignInAutomatic.accessToken);
   setRefreshToken(responseSignInAutomatic.refreshToken);
-
+  setAuth(responseSignInAutomatic.auth);
   // try {
   //   // if (response === "user was created") console.log({ response });
   //   console.log("hello 3");
@@ -83,10 +86,11 @@ export const createAccount = async ({
 type SignInInput = {
   e: React.FormEvent<HTMLFormElement>;
   userData: AutomaticSignInInput | null;
-  refreshToken: string;
-  setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
   accessToken: string;
+  refreshToken: string;
+  setAuth: React.Dispatch<React.SetStateAction<boolean>>;
   setAccessToken: React.Dispatch<React.SetStateAction<string>>;
+  setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
 };
 
 type SignInOutput = AutomaticSignInOutput;
@@ -94,7 +98,7 @@ type SignInOutput = AutomaticSignInOutput;
 type ResponseSignIn = AutomaticSignInOutput;
 
 type SignInOptions = {
-  headers?: { refreshToken?: string };
+  headers?: string;
   body: AutomaticSignInInput | null;
 };
 
@@ -103,21 +107,23 @@ export const signIn = async ({
   userData,
   // accessToken,
   refreshToken,
+  setAuth,
   setAccessToken,
   setRefreshToken,
 }: // setRefreshToken,
 SignInInput) => {
   e.preventDefault();
-  const responseSignIn: ResponseSignIn = await POST<
+  const responseSignIn: ResponseSignIn = await POST_SIGN_IN<
     SignInOutput,
     SignInOptions
   >("http://localhost:4000/api/v1/auth/sign-in", {
     body: userData,
-    headers: { refreshToken: refreshToken },
+    headers: refreshToken,
   });
   console.log({ responseSignIn });
   // const responseObject = responseSignIn.accessToken;
   // console.log(responseObject);
+  setAuth(responseSignIn.auth);
   setAccessToken(responseSignIn.accessToken);
   setRefreshToken(responseSignIn.refreshToken);
 };
