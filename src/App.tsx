@@ -4,13 +4,14 @@ import { SignInForm } from "./components/SignInForm";
 
 import { Note } from "./components/Note";
 import { Searcher } from "./components/Searcher";
-
-// import { SignUpForm } from "./components/SignUpForm";
+// import { EditTag } from "./components/EditTag";
+// import { EditNote } from "./components/EditNote";
 
 const NOTE_TEST =
   "Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae mollitia sed incidunt accusantium ratione, sapiente nihil debitis doloremque modi laborum ducimus enim tempore voluptatibus dignissimos explicabo, soluta rem autem asperiores.";
 
 function App() {
+  const [user, setUser] = useState("");
   const [auth, setAuth] = useState(false);
   const [displaySignInForm, setDisplaySignInForm] = useState(false);
   const [refreshToken, setRefreshToken] = useState("");
@@ -34,7 +35,7 @@ function App() {
                   setDisplaySignInForm((prev) => !prev);
                 }}
               >
-                {auth ? "Profile" : signInDisplay}
+                {auth ? "Sign out" : signInDisplay}
               </button>
             </li>
           </ul>
@@ -63,6 +64,10 @@ function App() {
         {auth && <Searcher />}
         {auth && (
           <>
+            {/* <div className="flex flex-col justify-center items-center">
+              <EditTag />
+              <EditNote />
+            </div> */}
             <section className=" py-8 flex gap-8 flex-col items-center text-sm w-full justify-center">
               <Note content={NOTE_TEST + NOTE_TEST} tag="#fruit" />
               <Note content={NOTE_TEST} tag="#house" />
@@ -71,11 +76,8 @@ function App() {
               <Note content={NOTE_TEST + NOTE_TEST} tag="#study" />
               <Note content={NOTE_TEST} tag="#fruit" />
               <Note content={NOTE_TEST + NOTE_TEST} tag="#book" />
+              {/* {INITIAL_TAGS.filter((tag) => tag.userId === user)} */}
             </section>
-            {/* <div className="flex flex-col justify-center items-center">
-              <EditTag />
-              <EditNote />
-            </div> */}
           </>
         )}
       </main>
@@ -84,3 +86,31 @@ function App() {
 }
 
 export default App;
+
+type InitialTagsType = [
+  {
+    userId: string;
+    tagName: string;
+    notes: [
+      {
+        userId: string;
+        tagName: string;
+        note: string;
+      }
+    ];
+  }
+];
+
+const INITIAL_TAGS: InitialTagsType = [
+  {
+    userId: "65f8b5218d9f703cff89e59b",
+    tagName: "books",
+    notes: [
+      {
+        userId: "65f8b5218d9f703cff89e59b",
+        tagName: "books",
+        note: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae mollitia sed incidunt accusantium ratione, sapiente nihil debitis doloremque modi laborum ducimus enim tempore voluptatibus dignissimos explicabo, soluta rem autem asperiores.",
+      },
+    ],
+  },
+];

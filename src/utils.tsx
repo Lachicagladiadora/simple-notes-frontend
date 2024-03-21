@@ -121,11 +121,10 @@ SignInInput) => {
     headers: refreshToken,
   });
   console.log({ responseSignIn });
-  // const responseObject = responseSignIn.accessToken;
-  // console.log(responseObject);
-  setAuth(responseSignIn.auth);
+  if (!responseSignIn.auth) console.log(responseSignIn.message);
   setAccessToken(responseSignIn.accessToken);
   setRefreshToken(responseSignIn.refreshToken);
+  setAuth(responseSignIn.auth);
 };
 
 // SIGN OUT
