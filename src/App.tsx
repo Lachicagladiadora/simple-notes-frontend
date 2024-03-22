@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SignUpForm } from "./components/SignUpForm";
 import { SignInForm } from "./components/SignInForm";
 
@@ -11,7 +11,7 @@ const NOTE_TEST =
   "Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae mollitia sed incidunt accusantium ratione, sapiente nihil debitis doloremque modi laborum ducimus enim tempore voluptatibus dignissimos explicabo, soluta rem autem asperiores.";
 
 function App() {
-  const [user, setUser] = useState("");
+  // const [user, setUser] = useState("");
   const [auth, setAuth] = useState(false);
   const [displaySignInForm, setDisplaySignInForm] = useState(false);
   const [refreshToken, setRefreshToken] = useState("");
@@ -20,6 +20,38 @@ function App() {
   console.log({ auth });
 
   const signInDisplay = !auth && displaySignInForm ? "Sign up" : "Sign in";
+
+  // useEffect(() => {
+  //   const tokensData = localStorage.getItem("Tokens Data");
+  //   if (tokensData === null) return;
+  //   const tokens = JSON.parse(tokensData);
+  //   console.log("get 1", { tokensData });
+  //   setRefreshToken(tokens.refreshToken);
+  //   setAccessToken(tokens.accessToken);
+  //   console.log("get 2", localStorage.getItem("Tokens Data"));
+  // }, [setAccessToken, setRefreshToken]);
+
+  console.log({ refreshToken }, { accessToken });
+  useEffect(() => {
+    const tokensData = localStorage.getItem("Tokens Data");
+
+    if (tokensData === null) {
+      const updateTokensData = {
+        refreshToken: refreshToken,
+        accessToken: accessToken,
+      };
+      console.log("set 1", { tokensData });
+      localStorage.setItem("Tokens Data", JSON.stringify(updateTokensData));
+      console.log("set 2", localStorage.getItem("Tokens Data"));
+    }
+
+    if (tokensData !== null) {
+      const tokens = JSON.parse(tokensData);
+      setRefreshToken(tokens.refreshToken);
+      setAccessToken(tokens.accessToken);
+      setAuth(true);
+    }
+  }, [accessToken, refreshToken]);
 
   return (
     <>
@@ -44,8 +76,8 @@ function App() {
       <main className="py-12 flex flex-col justify-center items-center">
         {!displaySignInForm && !auth && (
           <SignUpForm
-            accessToken={accessToken}
-            refreshToken={refreshToken}
+            // accessToken={accessToken}
+            // refreshToken={refreshToken}
             setAuth={setAuth}
             setDisplaySignInForm={setDisplaySignInForm}
             setAccessToken={setAccessToken}
@@ -87,30 +119,30 @@ function App() {
 
 export default App;
 
-type InitialTagsType = [
-  {
-    userId: string;
-    tagName: string;
-    notes: [
-      {
-        userId: string;
-        tagName: string;
-        note: string;
-      }
-    ];
-  }
-];
+// type InitialTagsType = [
+//   {
+//     userId: string;
+//     tagName: string;
+//     notes: [
+//       {
+//         userId: string;
+//         tagName: string;
+//         note: string;
+//       }
+//     ];
+//   }
+// ];
 
-const INITIAL_TAGS: InitialTagsType = [
-  {
-    userId: "65f8b5218d9f703cff89e59b",
-    tagName: "books",
-    notes: [
-      {
-        userId: "65f8b5218d9f703cff89e59b",
-        tagName: "books",
-        note: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae mollitia sed incidunt accusantium ratione, sapiente nihil debitis doloremque modi laborum ducimus enim tempore voluptatibus dignissimos explicabo, soluta rem autem asperiores.",
-      },
-    ],
-  },
-];
+// const INITIAL_TAGS: InitialTagsType = [
+//   {
+//     userId: "65f8b5218d9f703cff89e59b",
+//     tagName: "books",
+//     notes: [
+//       {
+//         userId: "65f8b5218d9f703cff89e59b",
+//         tagName: "books",
+//         note: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae mollitia sed incidunt accusantium ratione, sapiente nihil debitis doloremque modi laborum ducimus enim tempore voluptatibus dignissimos explicabo, soluta rem autem asperiores.",
+//       },
+//     ],
+//   },
+// ];

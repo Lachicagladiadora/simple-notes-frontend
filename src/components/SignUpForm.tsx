@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createAccount } from "../utils";
 
 type SignUpFormInput = {
-  accessToken: string;
-  refreshToken: string;
+  // accessToken: string;
+  // refreshToken: string;
   setAuth: React.Dispatch<React.SetStateAction<boolean>>;
   setDisplaySignInForm: React.Dispatch<React.SetStateAction<boolean>>;
   setAccessToken: React.Dispatch<React.SetStateAction<string>>;
@@ -11,8 +11,8 @@ type SignUpFormInput = {
 };
 
 export const SignUpForm = ({
-  accessToken,
-  refreshToken,
+  // accessToken,
+  // refreshToken,
   setAuth,
   setDisplaySignInForm,
   setAccessToken,
@@ -22,14 +22,6 @@ export const SignUpForm = ({
   const [userName, setUserNAme] = useState("");
   const [password, setPassword] = useState("");
   const [passwordReview, setPasswordReview] = useState("");
-
-  useEffect(() => {
-    const tokensData = {
-      ultimateRefreshToken: refreshToken,
-      ultimateAccessToken: accessToken,
-    };
-    localStorage.setItem("Tokens Data", JSON.stringify(tokensData));
-  }, [accessToken, refreshToken]);
 
   const changeDisplay = (
     setDisplaySignInForm: React.Dispatch<React.SetStateAction<boolean>>

@@ -1,4 +1,4 @@
-import { POST, POST_SIGN_IN } from "./fetch.utils";
+import { POST } from "./fetch.utils";
 
 // SIGN UP
 type UserDataType = {
@@ -85,7 +85,7 @@ export const createAccount = async ({
 // SIGN IN
 type SignInInput = {
   e: React.FormEvent<HTMLFormElement>;
-  userData: AutomaticSignInInput | null;
+  userData: AutomaticSignInInput;
   accessToken: string;
   refreshToken: string;
   setAuth: React.Dispatch<React.SetStateAction<boolean>>;
@@ -97,31 +97,29 @@ type SignInOutput = AutomaticSignInOutput;
 
 type ResponseSignIn = AutomaticSignInOutput;
 
-type SignInOptions = {
-  headers?: string;
-  body: AutomaticSignInInput | null;
-};
+// type SignInOptions = {
+//   // headers?: string;
+//   body: AutomaticSignInInput
+// };
 
 export const signIn = async ({
   e,
   userData,
   // accessToken,
-  refreshToken,
+  // refreshToken,
   setAuth,
   setAccessToken,
   setRefreshToken,
 }: // setRefreshToken,
 SignInInput) => {
   e.preventDefault();
-  const responseSignIn: ResponseSignIn = await POST_SIGN_IN<
+  // if(userData)
+  const responseSignIn: ResponseSignIn = await POST<
     SignInOutput,
-    SignInOptions
-  >("http://localhost:4000/api/v1/auth/sign-in", {
-    body: userData,
-    headers: refreshToken,
-  });
+    AutomaticSignInInput
+  >("http://localhost:4000/api/v1/auth/sign-in", userData);
   console.log({ responseSignIn });
-  if (!responseSignIn.auth) console.log(responseSignIn.message);
+  if (!responseSignIn.auth) return setAuth(false); // todo: display error message
   setAccessToken(responseSignIn.accessToken);
   setRefreshToken(responseSignIn.refreshToken);
   setAuth(responseSignIn.auth);
