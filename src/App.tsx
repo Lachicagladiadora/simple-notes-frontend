@@ -4,6 +4,7 @@ import { SignInForm } from "./components/SignInForm";
 
 import { Note } from "./components/Note";
 import { Searcher } from "./components/Searcher";
+import { signOut } from "./utils";
 // import { EditTag } from "./components/EditTag";
 // import { EditNote } from "./components/EditNote";
 
@@ -64,6 +65,7 @@ function App() {
                 type="button"
                 onClick={() => {
                   setAuth(false);
+                  signOut();
                   setDisplaySignInForm((prev) => !prev);
                 }}
               >
@@ -76,8 +78,8 @@ function App() {
       <main className="py-12 flex flex-col justify-center items-center">
         {!displaySignInForm && !auth && (
           <SignUpForm
-            // accessToken={accessToken}
-            // refreshToken={refreshToken}
+            accessToken={accessToken}
+            refreshToken={refreshToken}
             setAuth={setAuth}
             setDisplaySignInForm={setDisplaySignInForm}
             setAccessToken={setAccessToken}

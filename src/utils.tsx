@@ -1,3 +1,4 @@
+// import { useEffect } from "react";
 import { POST } from "./fetch.utils";
 
 // SIGN UP
@@ -97,23 +98,14 @@ type SignInOutput = AutomaticSignInOutput;
 
 type ResponseSignIn = AutomaticSignInOutput;
 
-// type SignInOptions = {
-//   // headers?: string;
-//   body: AutomaticSignInInput
-// };
-
 export const signIn = async ({
   e,
   userData,
-  // accessToken,
-  // refreshToken,
   setAuth,
   setAccessToken,
   setRefreshToken,
-}: // setRefreshToken,
-SignInInput) => {
+}: SignInInput) => {
   e.preventDefault();
-  // if(userData)
   const responseSignIn: ResponseSignIn = await POST<
     SignInOutput,
     AutomaticSignInInput
@@ -123,21 +115,22 @@ SignInInput) => {
   setAccessToken(responseSignIn.accessToken);
   setRefreshToken(responseSignIn.refreshToken);
   setAuth(responseSignIn.auth);
+  // useEffect(()=>{},[])
 };
 
 // SIGN OUT
-type signOutProps = {
-  e: React.FormEvent<HTMLButtonElement>;
-  userData: UserDataType | null;
-};
+// type signOutInput = {
+//   e: React.FormEvent<HTMLButtonElement>;
+//   // userData: UserDataType | null;
+// };
 
-export const signOut = async ({ e, userData }: signOutProps) => {
-  e.preventDefault();
+export const signOut = async () => {
+  // e.preventDefault();
   const response: ResponseDataType = await POST(
-    "http://localhost:4000/api/v1/auth/sign-off/",
-    userData
+    "http://localhost:4000/api/v1/auth/sign-off/"
+    // userData
   );
-  console.log({ response });
+  console.log("sign Out", { response });
 };
 
 // TAGS

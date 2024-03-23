@@ -23,7 +23,7 @@
 //   return data;
 // };
 
-export const POST = async <R, P>(url: string, body: P): Promise<R> => {
+export const POST = async <R, P>(url: string, body?: P): Promise<R> => {
   const res = await fetch(url, {
     method: "POST",
     body: JSON.stringify(body),

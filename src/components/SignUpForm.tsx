@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createAccount } from "../utils";
 
 type SignUpFormInput = {
-  // accessToken: string;
-  // refreshToken: string;
+  accessToken: string;
+  refreshToken: string;
   setAuth: React.Dispatch<React.SetStateAction<boolean>>;
   setDisplaySignInForm: React.Dispatch<React.SetStateAction<boolean>>;
   setAccessToken: React.Dispatch<React.SetStateAction<string>>;
@@ -11,8 +11,8 @@ type SignUpFormInput = {
 };
 
 export const SignUpForm = ({
-  // accessToken,
-  // refreshToken,
+  accessToken,
+  refreshToken,
   setAuth,
   setDisplaySignInForm,
   setAccessToken,
@@ -28,6 +28,16 @@ export const SignUpForm = ({
   ) => {
     setDisplaySignInForm(true);
   };
+
+  useEffect(() => {
+    // localStorage.setItem();
+    const updateTokensData = {
+      refreshToken: refreshToken,
+      accessToken: accessToken,
+    };
+    // console.log("set 1", { tokensData });
+    localStorage.setItem("Tokens Data", JSON.stringify(updateTokensData));
+  }, []);
 
   return (
     <div className="absolute top-2/4 left-2/4 -translate-x-1/2 -translate-y-1/2">
