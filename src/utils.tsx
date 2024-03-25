@@ -1,5 +1,6 @@
 // import { useEffect } from "react";
-import { POST } from "./fetch.utils";
+import { NoteType } from "./App";
+import { GET, POST } from "./fetch.utils";
 
 // SIGN UP
 type UserDataType = {
@@ -167,11 +168,40 @@ export const deleteTag = () => {
 };
 
 // NOTES
-export const postNotes = () => {
-  console.log("postNotes");
+type PostNoteInput = {
+  e: React.FormEvent<HTMLButtonElement>;
+  newNote: {
+    name: string;
+    tag: string;
+    user: string;
+  };
 };
-export const getNotes = () => {
+export const postNote = async ({ e, newNote }: PostNoteInput) => {
+  // e.preventDefault();
+  try {
+    console.log({ e });
+    console.log("postNotes");
+    const responseNote = await POST(
+      "http://localhost:4000/api/v1/note",
+      newNote
+    );
+    console.log({ responseNote });
+  } catch (error) {
+    console.log({ error });
+  }
+};
+
+type GetNotesInput = {
+  userId: string;
+  setNotes: React.Dispatch<React.SetStateAction<NoteType[]>>;
+};
+export const getNotes = async ({ userId, setNotes }: GetNotesInput) => {
   console.log("getNotes");
+  const response = await GET<NoteType[]>(
+    `http://localhost:4000/api/v1/note/user/${userId}`
+  );
+  console.log({ response });
+  setNotes(response);
 };
 export const updateNotes = () => {
   console.log("updateNotes");

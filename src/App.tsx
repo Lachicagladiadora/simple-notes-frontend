@@ -1,15 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { SignUpForm } from "./components/SignUpForm";
 import { SignInForm } from "./components/SignInForm";
 
 import { Note } from "./components/Note";
 import { Searcher } from "./components/Searcher";
-import { signOut } from "./utils";
+import { getNotes, postNote, signOut } from "./utils";
 // import { EditTag } from "./components/EditTag";
 // import { EditNote } from "./components/EditNote";
 
 const NOTE_TEST =
   "Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae mollitia sed incidunt accusantium ratione, sapiente nihil debitis doloremque modi laborum ducimus enim tempore voluptatibus dignissimos explicabo, soluta rem autem asperiores.";
+
+export type NoteType = {
+  name: string;
+  tag: string;
+  updatedAt: string;
+  user: string;
+  __v: number;
+  _id: string;
+};
 
 function App() {
   // const [user, setUser] = useState("");
@@ -17,8 +26,10 @@ function App() {
   const [displaySignInForm, setDisplaySignInForm] = useState(false);
   const [refreshToken, setRefreshToken] = useState("");
   const [accessToken, setAccessToken] = useState("");
+  const [notes, setNotes] = useState<NoteType[]>([]);
 
   console.log({ auth });
+  console.log({ notes });
 
   const signInDisplay = !auth && displaySignInForm ? "Sign up" : "Sign in";
 
@@ -54,6 +65,11 @@ function App() {
     }
   }, [accessToken, refreshToken]);
 
+  const newNote = {
+    name: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus, labore perspiciatis voluptate cum omnis dolorum totam, neque, minima nostrum aspernatur officiis similique alias consequuntur inventore id tempore doloribus quasi adipisci.",
+    tag: "Books",
+    user: "65f8b5218d9f703cff89e59b",
+  };
   return (
     <>
       <header className="w-full h-16 bg-purple-900 flex items-center justify-center capitalize text-pink-50 px-6">
@@ -70,6 +86,23 @@ function App() {
                 }}
               >
                 {auth ? "Sign out" : signInDisplay}
+              </button>
+            </li>
+            <li>
+              <button onClick={(e) => postNote({ e: e, newNote: newNote })}>
+                new note
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() =>
+                  getNotes({
+                    userId: "65f8b5218d9f703cff89e59b",
+                    setNotes: setNotes,
+                  })
+                }
+              >
+                get notes
               </button>
             </li>
           </ul>
@@ -103,14 +136,9 @@ function App() {
               <EditNote />
             </div> */}
             <section className=" py-8 flex gap-8 flex-col items-center text-sm w-full justify-center">
-              <Note content={NOTE_TEST + NOTE_TEST} tag="#fruit" />
-              <Note content={NOTE_TEST} tag="#house" />
-              <Note content={NOTE_TEST + NOTE_TEST} tag="#book" />
-              <Note content={NOTE_TEST} tag="#health" />
-              <Note content={NOTE_TEST + NOTE_TEST} tag="#study" />
-              <Note content={NOTE_TEST} tag="#fruit" />
-              <Note content={NOTE_TEST + NOTE_TEST} tag="#book" />
-              {/* {INITIAL_TAGS.filter((tag) => tag.userId === user)} */}
+              {notes.map((cur) => (
+                <Note content={cur.name} tag={cur.tag} />
+              ))}
             </section>
           </>
         )}
