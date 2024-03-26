@@ -7,14 +7,14 @@ type SignInFormInput = {
   setAuth: React.Dispatch<React.SetStateAction<boolean>>;
   setAccessToken: React.Dispatch<React.SetStateAction<string>>;
   setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
+  setUserId: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const SignInForm = ({
-  accessToken,
-  refreshToken,
   setAuth,
   setAccessToken,
   setRefreshToken,
+  setUserId,
 }: SignInFormInput) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,11 +38,10 @@ export const SignInForm = ({
               email: email,
               password: password,
             },
-            accessToken: accessToken,
-            refreshToken: refreshToken,
             setAuth: setAuth,
             setAccessToken: setAccessToken,
             setRefreshToken: setRefreshToken,
+            setUserId: setUserId,
           })
         }
       >

@@ -8,12 +8,12 @@ import { useState } from "react";
 type NoteProps = {
   tag: string;
   content: string;
+  onDelete: () => void;
 };
 
-export const Note = ({ tag, content }: NoteProps) => {
+export const Note = ({ tag, content, onDelete }: NoteProps) => {
   const [mouseInNote, setMouseInNote] = useState(false);
 
-  // change href from <a></a>
   return (
     <a
       href="/api/note/id"
@@ -30,7 +30,13 @@ export const Note = ({ tag, content }: NoteProps) => {
           <button className="p-1 rounded-full text-fuchsia-950 hover:text-fuchsia-50 hover:bg-fuchsia-950 hover:text-2xl">
             <PencilIcon className="h-5 w-5" />
           </button>
-          <button className="p-1 rounded-full text-fuchsia-950 hover:text-fuchsia-50 hover:bg-fuchsia-950 hover:text-2xl">
+          <button
+            className="p-1 rounded-full text-fuchsia-950 hover:text-fuchsia-50 hover:bg-fuchsia-950 hover:text-2xl"
+            onClick={(e) => {
+              e.preventDefault();
+              onDelete();
+            }}
+          >
             <TrashIcon className="h-5 w-5" />
           </button>
           <button className="p-1 rounded-full text-fuchsia-950 hover:text-fuchsia-50 hover:bg-fuchsia-950 hover:text-2xl">
@@ -38,20 +44,20 @@ export const Note = ({ tag, content }: NoteProps) => {
           </button>
         </div>
         <span
-          className={`whitespace-pre border px-2 py-1 rounded-lg font-semibold ${
+          className={`whitespace-pre border px-2 py-1 rounded-lg font-semibold capitalize ${
             mouseInNote
               ? "border-fuchsia-950 text-purple-950"
               : "border-purple-800 text-purple-800"
           }`}
         >
-          {tag}
+          # {tag}
         </span>
         <p
           className={`${
             mouseInNote
               ? "opacity-90  text-fuchsia-950"
               : "opacity-50 text-purple-950"
-          } mt-4`}
+          } mt-4 line-clamp-2`}
         >
           {content}
         </p>

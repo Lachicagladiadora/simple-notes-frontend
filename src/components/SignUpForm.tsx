@@ -8,6 +8,7 @@ type SignUpFormInput = {
   setDisplaySignInForm: React.Dispatch<React.SetStateAction<boolean>>;
   setAccessToken: React.Dispatch<React.SetStateAction<string>>;
   setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
+  setUserId: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const SignUpForm = ({
@@ -17,6 +18,7 @@ export const SignUpForm = ({
   setDisplaySignInForm,
   setAccessToken,
   setRefreshToken,
+  setUserId,
 }: SignUpFormInput) => {
   const [email, setEmail] = useState("");
   const [userName, setUserNAme] = useState("");
@@ -58,6 +60,7 @@ export const SignUpForm = ({
             setAuth,
             setRefreshToken,
             setAccessToken,
+            setUserId,
           })
         }
       >
