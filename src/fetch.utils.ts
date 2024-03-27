@@ -1,10 +1,7 @@
 export const POST = async <R, P>(url: string, body?: P): Promise<R> => {
   const tokens = localStorage.getItem("Tokens Data");
   const accessToken = tokens ? JSON.parse(tokens).accessToken : "";
-  // return accessToken;
 
-  console.log({ body });
-  console.log({ url });
   const response = await fetch(url, {
     method: "POST",
     body: JSON.stringify(body),
@@ -13,9 +10,9 @@ export const POST = async <R, P>(url: string, body?: P): Promise<R> => {
       ...(accessToken && { authorization: `Bearer ${accessToken}` }),
     },
   });
-  console.log({ response });
+  // console.log({ response });
   const data = response.json();
-  console.log({ data });
+  // console.log({ data });
   return data;
 };
 

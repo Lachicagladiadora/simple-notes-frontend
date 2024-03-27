@@ -143,22 +143,21 @@ export const deleteTag = () => {
 };
 
 // NOTES
-type NewNoteType = {
+export type NewNoteType = {
   name: string;
   tag: string;
   user: string;
 };
 
 type PostNoteInput = {
-  e?: React.FormEvent<HTMLButtonElement>;
+  e: React.FormEvent<HTMLFormElement>;
   newNote: NewNoteType;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const postNote = async ({ e, newNote, setMessage }: PostNoteInput) => {
   try {
-    // e.preventDefault();
-    console.log({ e });
+    e.preventDefault();
     const responseNote = await POST<string, NewNoteType>(
       "http://localhost:4000/api/v1/note",
       newNote

@@ -5,6 +5,8 @@ import { SignInForm } from "./components/SignInForm";
 import { Note } from "./components/Note";
 import { Searcher } from "./components/Searcher";
 import { deleteNotes, getNotes, postNote, signOut } from "./utils";
+import { NewTagForm } from "./components/NewTagForm";
+import { NewNoteForm } from "./components/NewNoteForm";
 // import { EditTag } from "./components/EditTag";
 // import { EditNote } from "./components/EditNote";
 
@@ -28,6 +30,9 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
   const [notes, setNotes] = useState<NoteType[]>([]);
   const [message, setMessage] = useState("");
+  const [displayNoteForm, setDisplayNoteForm] = useState(false);
+  const [displayTagForm, setDisplayTagForm] = useState(false);
+  const [tagValue, setTagValue] = useState("");
 
   console.log({ auth });
   console.log({ notes });
@@ -68,7 +73,7 @@ function App() {
 
   const newNote = {
     name: " consectetur adipisicing elit. Possimus, labore perspiciatis voluptate cum omnis dolorum totam, neque, minima nostrum aspernatur officiis similique alias consequuntur inventore id tempore doloribus quasi adipisci.",
-    tag: "atlas",
+    tag: "Books",
     user: userId,
   };
 
@@ -140,6 +145,54 @@ function App() {
         {auth && <Searcher />}
         {auth && (
           <>
+            <section>
+              <ul className="flex items-center gap-10">
+                <li>
+                  <button
+                    type="button"
+                    className={`border-[2px] py-1 px-2 rounded-full  border-violet-700 hover:bg-violet-600 hover:text-neutral-50 ${
+                      displayTagForm && !displayNoteForm
+                        ? "text-neutral-50 bg-violet-600"
+                        : "border-violet-700 text-violet-700"
+                    }`}
+                    onClick={() => {
+                      setDisplayTagForm((prev) => !prev);
+                      setDisplayNoteForm(false);
+                    }}
+                  >
+                    New tag
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className={`border-[2px] border-violet-700 rounded-full py-1 px-2 hover:bg-violet-600 hover:text-neutral-50 ${
+                      displayNoteForm && !displayTagForm
+                        ? "text-neutral-50 bg-violet-600"
+                        : "border-violet-700 text-violet-700"
+                    }`}
+                    onClick={() => {
+                      setDisplayNoteForm((prev) => !prev);
+                      setDisplayTagForm(false);
+                    }}
+                  >
+                    New note
+                  </button>
+                </li>
+                {/* <li><button type="button">New tag</button></li> */}
+                {/* <li><button type="button">New tag</button></li> */}
+              </ul>
+              {displayTagForm && !displayNoteForm && <NewTagForm />}
+              {!displayTagForm && displayNoteForm && (
+                <NewNoteForm
+                  userId={userId}
+                  tagValue={tagValue}
+                  setTagValue={setTagValue}
+                  setNotes={setNotes}
+                  setMessage={setMessage}
+                />
+              )}
+            </section>
             <section className=" py-8 flex gap-8 flex-col items-center text-sm w-full justify-center">
               {notes.reverse().map((cur) => (
                 <Note
@@ -167,31 +220,3 @@ function App() {
 }
 
 export default App;
-
-// type InitialTagsType = [
-//   {
-//     userId: string;
-//     tagName: string;
-//     notes: [
-//       {
-//         userId: string;
-//         tagName: string;
-//         note: string;
-//       }
-//     ];
-//   }
-// ];
-
-// const INITIAL_TAGS: InitialTagsType = [
-//   {
-//     userId: "65f8b5218d9f703cff89e59b",
-//     tagName: "books",
-//     notes: [
-//       {
-//         userId: "65f8b5218d9f703cff89e59b",
-//         tagName: "books",
-//         note: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae mollitia sed incidunt accusantium ratione, sapiente nihil debitis doloremque modi laborum ducimus enim tempore voluptatibus dignissimos explicabo, soluta rem autem asperiores.",
-//       },
-//     ],
-//   },
-// ];
