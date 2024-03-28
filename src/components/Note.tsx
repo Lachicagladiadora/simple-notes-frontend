@@ -9,14 +9,15 @@ type NoteProps = {
   tag: string;
   content: string;
   onDelete: () => void;
+  getNotes: () => void;
 };
 
-export const Note = ({ tag, content, onDelete }: NoteProps) => {
+export const Note = ({ tag, content, onDelete, getNotes }: NoteProps) => {
   const [mouseInNote, setMouseInNote] = useState(false);
 
   return (
     <a
-      href="/api/note/id"
+      href="/api/note"
       className="w-3/4 hover:bg-pink-600 hover:opacity-70 hover:rounded-3xl"
       onMouseOver={() => setMouseInNote(true)}
       onMouseOut={() => setMouseInNote(false)}
@@ -35,6 +36,7 @@ export const Note = ({ tag, content, onDelete }: NoteProps) => {
             onClick={(e) => {
               e.preventDefault();
               onDelete();
+              getNotes();
             }}
           >
             <TrashIcon className="h-5 w-5" />

@@ -1,29 +1,27 @@
 import { useState } from "react";
-import { getNotes, postNote } from "../utils";
-import { NoteType } from "../App";
+import { postNote } from "../utils";
 
 type NewNoteFormInput = {
   userId: string;
-  // newNote: NewNoteType;
   tagValue: string;
   setTagValue: React.Dispatch<React.SetStateAction<string>>;
-  setNotes: React.Dispatch<React.SetStateAction<NoteType[]>>;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
   setDisplayNoteForm: React.Dispatch<React.SetStateAction<boolean>>;
+  getNotes: () => void;
 };
 
 export const NewNoteForm = ({
   userId,
   tagValue,
   setTagValue,
-  setNotes,
   setMessage,
   setDisplayNoteForm,
+  getNotes,
 }: NewNoteFormInput) => {
   const [noteValue, setNoteValue] = useState("");
 
   return (
-    <div className="w-full border-[2px] border-purple-800 rounded-xl p-4">
+    <div className="w-full mt-4 border-[2px] border-purple-800 rounded-xl p-4">
       <h1 className="text-xl text-purple-600">New Note</h1>
       <form
         className=" w-full flex flex-col"
@@ -33,28 +31,30 @@ export const NewNoteForm = ({
             newNote: { name: noteValue, tag: tagValue, user: userId },
             setMessage: setMessage,
           });
-          getNotes({ userId: userId, setNotes: setNotes });
           setDisplayNoteForm(false);
           setTagValue("");
           setNoteValue("");
+          getNotes();
         }}
       >
         <label htmlFor="tag" className="text-purple-800 opacity-80">
-          Write a new tag
+          Tag
         </label>
         <input
           type="text"
           id="tag"
-          className="border-[2px] border-purple-600 rounded-full py-1 px-2 text-purple-950 focus:border-[13px] focus-visible:border-red-700 focus-within::border-none"
+          className="border-[2px] border-purple-600 rounded-lg py-1 px-2 text-purple-950 focus:outline-none focus:border-[3px] focus-visible:border-violet-500"
+          placeholder="Write a tag"
           value={tagValue}
           onChange={(e) => setTagValue(e.target.value)}
         />
         <label htmlFor="note" className="text-purple-800 opacity-80">
-          Write a new note
+          Note
         </label>
         <textarea
           id="note"
-          className="border-[2px] border-purple-600 rounded-full py-1 px-2 text-purple-950"
+          className="border-[2px] border-purple-600 rounded-lg py-1 px-2 text-purple-950 focus:outline-none focus:border-[3px] focus-visible:border-violet-500"
+          placeholder="Write a note"
           value={noteValue}
           onChange={(e) => setNoteValue(e.target.value)}
         />

@@ -1,5 +1,5 @@
 import { NoteType } from "./App";
-import { DELETE, GET, POST } from "./fetch.utils";
+import { DELETE, GET, POST, PUT } from "./fetch.utils";
 
 // SIGN UP
 type UserDataType = {
@@ -42,28 +42,37 @@ export const createAccount = async ({
   setUserId,
 }: CreateAccountInput) => {
   e.preventDefault();
+  try {
+    if (!userData.email || !userData.username || !userData.password)
+      return console.log("userData is null");
 
-  if (!userData.email || !userData.username || !userData.password)
-    return console.log("userData is null");
+    const response: ResponseDataType = await POST(
+      "http://localhost:4000/api/v1/auth/sign-up",
+      userData
+    );
+    console.log("create account", { response });
 
-  const response: ResponseDataType = await POST(
-    "http://localhost:4000/api/v1/auth/sign-up",
-    userData
-  );
-  console.log("create account", { response });
+    const responseSignInAutomatic = await POST<
+      AutomaticSignInOutput,
+      AutomaticSignInInput
+    >("http://localhost:4000/api/v1/auth/sign-in", {
+      email: userData?.email,
+      password: userData?.password,
+    });
 
-  const responseSignInAutomatic = await POST<
-    AutomaticSignInOutput,
-    AutomaticSignInInput
-  >("http://localhost:4000/api/v1/auth/sign-in", {
-    email: userData?.email,
-    password: userData?.password,
-  });
+    const updateTokensData = {
+      refreshToken: responseSignInAutomatic.refreshToken,
+      accessToken: responseSignInAutomatic.accessToken,
+    };
+    localStorage.setItem("Tokens Data", JSON.stringify(updateTokensData));
 
-  setAccessToken(responseSignInAutomatic.accessToken);
-  setRefreshToken(responseSignInAutomatic.refreshToken);
-  setAuth(responseSignInAutomatic.auth);
-  setUserId(responseSignInAutomatic.user);
+    setAccessToken(responseSignInAutomatic.accessToken);
+    setRefreshToken(responseSignInAutomatic.refreshToken);
+    setAuth(responseSignInAutomatic.auth);
+    setUserId(responseSignInAutomatic.user);
+  } catch (error) {
+    console.log("create account", { error });
+  }
 };
 
 // SIGN IN
@@ -89,24 +98,39 @@ export const signIn = async ({
   setUserId,
 }: SignInInput) => {
   e.preventDefault();
-  const responseSignIn: ResponseSignIn = await POST<
-    SignInOutput,
-    AutomaticSignInInput
-  >("http://localhost:4000/api/v1/auth/sign-in", userData);
-  console.log({ responseSignIn });
-  if (!responseSignIn.auth) return setAuth(false); // todo: display error message
-  setAccessToken(responseSignIn.accessToken);
-  setRefreshToken(responseSignIn.refreshToken);
-  setAuth(responseSignIn.auth);
-  setUserId(responseSignIn.user);
+  try {
+    const responseSignIn: ResponseSignIn = await POST<
+      SignInOutput,
+      AutomaticSignInInput
+    >("http://localhost:4000/api/v1/auth/sign-in", userData);
+    console.log({ responseSignIn });
+    if (!responseSignIn.auth) return setAuth(false); // todo: display error message
+
+    const updateTokensData = {
+      refreshToken: responseSignIn.refreshToken,
+      accessToken: responseSignIn.accessToken,
+    };
+    localStorage.setItem("Tokens Data", JSON.stringify(updateTokensData));
+
+    setAccessToken(responseSignIn.accessToken);
+    setRefreshToken(responseSignIn.refreshToken);
+    setAuth(responseSignIn.auth);
+    setUserId(responseSignIn.user);
+  } catch (error) {
+    console.log("sign in", { error });
+  }
 };
 
 // SIGN OUT
 export const signOut = async () => {
-  const response: ResponseDataType = await POST(
-    "http://localhost:4000/api/v1/auth/sign-off/"
-  );
-  console.log("sign Out", { response });
+  try {
+    const response: ResponseDataType = await POST(
+      "http://localhost:4000/api/v1/auth/sign-off/"
+    );
+    console.log("sign Out", { response });
+  } catch (error) {
+    console.log("sign out", { error });
+  }
 };
 
 // TAGS
@@ -156,8 +180,8 @@ type PostNoteInput = {
 };
 
 export const postNote = async ({ e, newNote, setMessage }: PostNoteInput) => {
+  e.preventDefault();
   try {
-    e.preventDefault();
     const responseNote = await POST<string, NewNoteType>(
       "http://localhost:4000/api/v1/note",
       newNote
@@ -165,7 +189,7 @@ export const postNote = async ({ e, newNote, setMessage }: PostNoteInput) => {
     console.log({ responseNote });
     setMessage(responseNote);
   } catch (error) {
-    console.log({ error });
+    console.log("post note ", { error });
   }
 };
 
@@ -181,26 +205,42 @@ export const getNotes = async ({ userId, setNotes }: GetNotesInput) => {
     );
     setNotes(response);
   } catch (error) {
-    console.log({ error });
+    console.log("get notes", { error });
   }
 };
 
-export const updateNotes = () => {
+type EditNoteType = { name: string; tag: string };
+type UpdateNotesInput = {
+  e: React.MouseEvent<HTMLButtonElement, MouseEvent>;
+  noteId: string;
+  editNote: EditNoteType;
+};
+export const updateNotes = async ({
+  e,
+  noteId,
+  editNote,
+}: UpdateNotesInput) => {
   console.log("updateNotes");
+  console.log(e);
+  const response = await PUT<>(
+    `http://localhost:4000/api/v1/note/${noteId}`,
+    editNote
+  );
+  console.log("edit note", { response });
 };
 
 type DeleteNotesInput = {
-  _id: string;
+  noteId: string;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
 };
-export const deleteNotes = async ({ _id, setMessage }: DeleteNotesInput) => {
+export const deleteNotes = async ({ noteId, setMessage }: DeleteNotesInput) => {
   try {
     console.log("deleteNotes");
     const response = await DELETE<string>(
-      `http://localhost:4000/api/v1/note/${_id}`
+      `http://localhost:4000/api/v1/note/${noteId}`
     );
     setMessage(response);
   } catch (error) {
-    console.log({ error });
+    console.log(`delete note${noteId}`, { error });
   }
 };

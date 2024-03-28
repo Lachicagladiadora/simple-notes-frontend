@@ -1,17 +1,12 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SignUpForm } from "./components/SignUpForm";
 import { SignInForm } from "./components/SignInForm";
 
 import { Note } from "./components/Note";
 import { Searcher } from "./components/Searcher";
-import { deleteNotes, getNotes, postNote, signOut } from "./utils";
+import { deleteNotes, getNotes, postNote, signOut, updateNotes } from "./utils";
 import { NewTagForm } from "./components/NewTagForm";
 import { NewNoteForm } from "./components/NewNoteForm";
-// import { EditTag } from "./components/EditTag";
-// import { EditNote } from "./components/EditNote";
-
-// const NOTE_TEST =
-// "Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae mollitia sed incidunt accusantium ratione, sapiente nihil debitis doloremque modi laborum ducimus enim tempore voluptatibus dignissimos explicabo, soluta rem autem asperiores.";
 
 export type NoteType = {
   name: string;
@@ -61,35 +56,31 @@ function App() {
       console.log("set 1", { tokensData });
       localStorage.setItem("Tokens Data", JSON.stringify(updateTokensData));
       console.log("set 2", localStorage.getItem("Tokens Data"));
+      setAuth(false);
     }
 
     if (tokensData !== null) {
       const tokens = JSON.parse(tokensData);
       setRefreshToken(tokens.refreshToken);
       setAccessToken(tokens.accessToken);
-      setAuth(true);
+      // setAuth(true);
     }
   }, [accessToken, refreshToken]);
 
-  const newNote = {
-    name: " consectetur adipisicing elit. Possimus, labore perspiciatis voluptate cum omnis dolorum totam, neque, minima nostrum aspernatur officiis similique alias consequuntur inventore id tempore doloribus quasi adipisci.",
-    tag: "Books",
-    user: userId,
-  };
-
   console.log({ notes });
-  // notes.filter((cur) => cur._id !== deleteNote);
-  // const NOTES = ;
-  // console.log({ NOTES });
+
+  const allNotes = useCallback(() => {
+    getNotes({ userId: userId, setNotes: setNotes });
+  }, [userId]);
 
   useEffect(() => {
-    // postNote({newNote:newNote})
-    getNotes({
-      userId: "65f8b5218d9f703cff89e59b",
-      setNotes: setNotes,
-    });
-  }, []);
+    if (!userId) return;
+    getNotes({ userId: userId, setNotes: setNotes });
+  }, [userId]);
 
+  const name =
+    "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem explicabo molestiae soluta obcaecati autem excepturi iusto ratione aperiam blanditiis aliquid. Omnis quos esse dolore repudiandae repellat! Veniam ea ad quod! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem explicabo molestiae soluta obcaecati autem excepturi iusto ratione aperiam blanditiis aliquid. Omnis quos esse dolore repudiandae repellat! Veniam ea ad quod!";
+  const updateNote = { name: name, tag: "Superman" };
   return (
     <>
       <header className="w-full h-16 bg-purple-900 flex items-center justify-center capitalize text-pink-50 px-6">
@@ -179,7 +170,21 @@ function App() {
                     New note
                   </button>
                 </li>
-                {/* <li><button type="button">New tag</button></li> */}
+                <li>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      updateNotes({
+                        e: e,
+                        noteId: "660231a8e25d579b91df9284",
+                        editNote: updateNote,
+                      });
+                      allNotes();
+                    }}
+                  >
+                    edit note "Atlas"
+                  </button>
+                </li>
                 {/* <li><button type="button">New tag</button></li> */}
               </ul>
               {displayTagForm && !displayNoteForm && <NewTagForm />}
@@ -188,8 +193,9 @@ function App() {
                   userId={userId}
                   tagValue={tagValue}
                   setTagValue={setTagValue}
-                  setNotes={setNotes}
                   setMessage={setMessage}
+                  setDisplayNoteForm={setDisplayNoteForm}
+                  getNotes={allNotes}
                 />
               )}
             </section>
@@ -199,16 +205,18 @@ function App() {
                   key={cur._id}
                   content={cur.name}
                   tag={cur.tag}
-                  onDelete={() =>
-                    deleteNotes({ _id: cur._id, setMessage: setMessage })
-                  }
+                  onDelete={() => {
+                    console.log(cur);
+                    deleteNotes({ noteId: cur._id, setMessage: setMessage });
+                  }}
+                  getNotes={allNotes}
                 />
               ))}
             </section>
           </>
         )}
         <p
-          className={`absolute bottom-5 text-lg text-red-600 font-bold transition-opacity bg-yellow-300  p-5 bg-opacity-70 rounded-3xl ${
+          className={`fixed bottom-5 text-lg text-red-600 font-bold transition-opacity bg-yellow-300  p-5 bg-opacity-70 rounded-3xl ${
             message ? "visible" : " hidden"
           }`}
         >
