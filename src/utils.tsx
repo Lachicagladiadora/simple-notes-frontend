@@ -134,19 +134,28 @@ export const signOut = async () => {
 };
 
 // TAGS
+export type NewTagType = { name: string; user: string };
+
 type PostTagInput = {
-  e: React.FormEvent<HTMLButtonElement>;
-  newTag: { userId: string; tag: string };
+  e: React.FormEvent<HTMLFormElement>;
+  newTag: NewTagType;
+  // userId: string;
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export const postTag = async ({ e, newTag }: PostTagInput) => {
-  console.log("postTag");
-  e.preventDefault();
-  const response: ResponseDataType = await POST(
-    "http://localhost:4000/api/v1/user/:user",
-    newTag
-  );
-  console.log({ response });
+export const postTag = async ({ e, newTag, setMessage }: PostTagInput) => {
+  try {
+    e.preventDefault();
+    console.log("postTag");
+    const response: ResponseDataType = await POST<string, NewTagType>(
+      "http://localhost:4000/api/v1/tag",
+      newTag
+    );
+    console.log("post tag response", { response });
+    setMessage(response);
+  } catch (error) {
+    console.log("post tag error", { error });
+  }
 };
 
 export const getTag = () => {
@@ -210,12 +219,14 @@ export const getNotes = async ({ userId, setNotes }: GetNotesInput) => {
 };
 
 type UpdateNoteType = { name: string; tag: string };
+
 type UpdateNotesInput = {
   e: React.FormEvent<HTMLFormElement>;
   noteId: string;
   editNote: UpdateNoteType;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
 };
+
 export const updateNotes = async ({
   e,
   noteId,
@@ -239,6 +250,7 @@ type DeleteNotesInput = {
   noteId: string;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
 };
+
 export const deleteNotes = async ({ noteId, setMessage }: DeleteNotesInput) => {
   try {
     console.log("deleteNotes");

@@ -32,7 +32,7 @@ export const NewNoteForm = ({
         getNotes();
       }}
     >
-      <h1 className="text-xl text-purple-600">New Note</h1>
+      <h1 className="text-2xl text-purple-600">New Note</h1>
       <label htmlFor="tag" className="text-purple-800 opacity-80">
         Tag
       </label>

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
+import { deleteNotes, getNotes, signOut } from "./utils";
+
 import { SignUpForm } from "./components/SignUpForm";
 import { SignInForm } from "./components/SignInForm";
-
 import { Note } from "./components/Note";
 import { Searcher } from "./components/Searcher";
-import { deleteNotes, getNotes, signOut } from "./utils";
 import { NewTagForm } from "./components/NewTagForm";
 import { NewNoteForm } from "./components/NewNoteForm";
 import { UpdateNoteForm } from "./components/UpdateNoteForm";
@@ -26,8 +26,8 @@ function App() {
   const [accessToken, setAccessToken] = useState("");
   const [notes, setNotes] = useState<NoteType[]>([]);
   const [message, setMessage] = useState("");
-  const [displayNoteForm, setDisplayNoteForm] = useState(false);
-  const [displayTagForm, setDisplayTagForm] = useState(false);
+  const [displayPostNoteForm, setDisplayPostNoteForm] = useState(false);
+  const [displayPostTagForm, setDisplayPostTagForm] = useState(false);
   const [displayUpdateNoteForm, setDisplayUpdateNoteForm] = useState(false);
 
   console.log({ auth });
@@ -115,19 +115,19 @@ function App() {
         {auth && <Searcher />}
         {auth && (
           <>
-            <section className="w-full flex justify-center items-center">
+            <section className="w-full flex flex-col justify-center items-center">
               <ul className="flex items-center gap-10">
                 <li>
                   <button
                     type="button"
                     className={`border-[2px] py-1 px-2 rounded-full  border-violet-700 hover:bg-violet-600 hover:text-neutral-50 ${
-                      displayTagForm && !displayNoteForm
+                      displayPostTagForm && !displayPostNoteForm
                         ? "text-neutral-50 bg-violet-600"
                         : "border-violet-700 text-violet-700"
                     }`}
                     onClick={() => {
-                      setDisplayTagForm((prev) => !prev);
-                      setDisplayNoteForm(false);
+                      setDisplayPostTagForm((prev) => !prev);
+                      setDisplayPostNoteForm(false);
                     }}
                   >
                     New tag
@@ -137,28 +137,36 @@ function App() {
                   <button
                     type="button"
                     className={`border-[2px] border-violet-700 rounded-full py-1 px-2 hover:bg-violet-600 hover:text-neutral-50 ${
-                      displayNoteForm && !displayTagForm
+                      displayPostNoteForm && !displayPostTagForm
                         ? "text-neutral-50 bg-violet-600"
                         : "border-violet-700 text-violet-700"
                     }`}
                     onClick={() => {
-                      setDisplayNoteForm((prev) => !prev);
-                      setDisplayTagForm(false);
+                      setDisplayPostNoteForm((prev) => !prev);
+                      setDisplayPostTagForm(false);
                     }}
                   >
                     New note
                   </button>
                 </li>
               </ul>
-              {displayTagForm && !displayNoteForm && <NewTagForm />}
-              {!displayTagForm && displayNoteForm && (
+              {/* <div className="w-full"> */}
+              {displayPostTagForm && !displayPostNoteForm && (
+                <NewTagForm
+                  userId={userId}
+                  setMessage={setMessage}
+                  setDisplayPostTagForm={setDisplayPostTagForm}
+                />
+              )}
+              {!displayPostTagForm && displayPostNoteForm && (
                 <NewNoteForm
                   userId={userId}
                   setMessage={setMessage}
-                  setDisplayNoteForm={setDisplayNoteForm}
+                  setDisplayNoteForm={setDisplayPostNoteForm}
                   getNotes={allNotes}
                 />
               )}
+              {/* </div> */}
             </section>
             <section className=" py-8 flex gap-8 flex-col items-center text-sm w-full justify-center">
               {notes.reverse().map((cur) => (

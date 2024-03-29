@@ -10,9 +10,7 @@ export const POST = async <R, P>(url: string, body?: P): Promise<R> => {
       ...(accessToken && { authorization: `Bearer ${accessToken}` }),
     },
   });
-  // console.log({ response });
   const data = response.json();
-  // console.log({ data });
   return data;
 };
 
