@@ -4,9 +4,10 @@ import { SignInForm } from "./components/SignInForm";
 
 import { Note } from "./components/Note";
 import { Searcher } from "./components/Searcher";
-import { deleteNotes, getNotes, postNote, signOut, updateNotes } from "./utils";
+import { deleteNotes, getNotes, signOut } from "./utils";
 import { NewTagForm } from "./components/NewTagForm";
 import { NewNoteForm } from "./components/NewNoteForm";
+import { UpdateNoteForm } from "./components/UpdateNoteForm";
 
 export type NoteType = {
   name: string;
@@ -27,22 +28,12 @@ function App() {
   const [message, setMessage] = useState("");
   const [displayNoteForm, setDisplayNoteForm] = useState(false);
   const [displayTagForm, setDisplayTagForm] = useState(false);
-  const [tagValue, setTagValue] = useState("");
+  const [displayUpdateNoteForm, setDisplayUpdateNoteForm] = useState(false);
 
   console.log({ auth });
   console.log({ notes });
 
   const signInDisplay = !auth && displaySignInForm ? "Sign up" : "Sign in";
-
-  // useEffect(() => {
-  //   const tokensData = localStorage.getItem("Tokens Data");
-  //   if (tokensData === null) return;
-  //   const tokens = JSON.parse(tokensData);
-  //   console.log("get 1", { tokensData });
-  //   setRefreshToken(tokens.refreshToken);
-  //   setAccessToken(tokens.accessToken);
-  //   console.log("get 2", localStorage.getItem("Tokens Data"));
-  // }, [setAccessToken, setRefreshToken]);
 
   console.log({ refreshToken }, { accessToken });
   useEffect(() => {
@@ -78,9 +69,6 @@ function App() {
     getNotes({ userId: userId, setNotes: setNotes });
   }, [userId]);
 
-  const name =
-    "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem explicabo molestiae soluta obcaecati autem excepturi iusto ratione aperiam blanditiis aliquid. Omnis quos esse dolore repudiandae repellat! Veniam ea ad quod! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem explicabo molestiae soluta obcaecati autem excepturi iusto ratione aperiam blanditiis aliquid. Omnis quos esse dolore repudiandae repellat! Veniam ea ad quod!";
-  const updateNote = { name: name, tag: "Superman" };
   return (
     <>
       <header className="w-full h-16 bg-purple-900 flex items-center justify-center capitalize text-pink-50 px-6">
@@ -99,19 +87,10 @@ function App() {
                 {auth ? "Sign out" : signInDisplay}
               </button>
             </li>
-            <li>
-              <button
-                onClick={(e) =>
-                  postNote({ e: e, newNote: newNote, setMessage: setMessage })
-                }
-              >
-                new note
-              </button>
-            </li>
           </ul>
         </section>
       </header>
-      <main className="py-12 flex flex-col justify-center items-center">
+      <main className="w-full py-12 flex flex-col justify-center items-center">
         {!displaySignInForm && !auth && (
           <SignUpForm
             accessToken={accessToken}
@@ -136,7 +115,7 @@ function App() {
         {auth && <Searcher />}
         {auth && (
           <>
-            <section>
+            <section className="w-full flex justify-center items-center">
               <ul className="flex items-center gap-10">
                 <li>
                   <button
@@ -170,29 +149,11 @@ function App() {
                     New note
                   </button>
                 </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      updateNotes({
-                        e: e,
-                        noteId: "660231a8e25d579b91df9284",
-                        editNote: updateNote,
-                      });
-                      allNotes();
-                    }}
-                  >
-                    edit note "Atlas"
-                  </button>
-                </li>
-                {/* <li><button type="button">New tag</button></li> */}
               </ul>
               {displayTagForm && !displayNoteForm && <NewTagForm />}
               {!displayTagForm && displayNoteForm && (
                 <NewNoteForm
                   userId={userId}
-                  tagValue={tagValue}
-                  setTagValue={setTagValue}
                   setMessage={setMessage}
                   setDisplayNoteForm={setDisplayNoteForm}
                   getNotes={allNotes}
@@ -201,16 +162,29 @@ function App() {
             </section>
             <section className=" py-8 flex gap-8 flex-col items-center text-sm w-full justify-center">
               {notes.reverse().map((cur) => (
-                <Note
-                  key={cur._id}
-                  content={cur.name}
-                  tag={cur.tag}
-                  onDelete={() => {
-                    console.log(cur);
-                    deleteNotes({ noteId: cur._id, setMessage: setMessage });
-                  }}
-                  getNotes={allNotes}
-                />
+                <>
+                  <Note
+                    key={cur._id}
+                    content={cur.name}
+                    tag={cur.tag}
+                    updateNote={() => setDisplayUpdateNoteForm(true)}
+                    onDelete={() => {
+                      console.log(cur);
+                      deleteNotes({ noteId: cur._id, setMessage: setMessage });
+                    }}
+                    getNotes={allNotes}
+                  />
+                  {displayUpdateNoteForm && (
+                    <UpdateNoteForm
+                      noteId={cur._id}
+                      initialTag={cur.tag}
+                      initialNote={cur.name}
+                      setDisplayUpdateNoteForm={setDisplayUpdateNoteForm}
+                      getNotes={allNotes}
+                      setMessage={setMessage}
+                    />
+                  )}
+                </>
               ))}
             </section>
           </>

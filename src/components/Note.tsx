@@ -8,11 +8,18 @@ import { useState } from "react";
 type NoteProps = {
   tag: string;
   content: string;
+  updateNote: () => void;
   onDelete: () => void;
   getNotes: () => void;
 };
 
-export const Note = ({ tag, content, onDelete, getNotes }: NoteProps) => {
+export const Note = ({
+  tag,
+  content,
+  updateNote,
+  onDelete,
+  getNotes,
+}: NoteProps) => {
   const [mouseInNote, setMouseInNote] = useState(false);
 
   return (
@@ -28,7 +35,14 @@ export const Note = ({ tag, content, onDelete, getNotes }: NoteProps) => {
             mouseInNote ? "visible" : "hidden"
           }`}
         >
-          <button className="p-1 rounded-full text-fuchsia-950 hover:text-fuchsia-50 hover:bg-fuchsia-950 hover:text-2xl">
+          <button
+            className="p-1 rounded-full text-fuchsia-950 hover:text-fuchsia-50 hover:bg-fuchsia-950 hover:text-2xl"
+            onClick={(e) => {
+              e.preventDefault();
+              updateNote();
+              getNotes();
+            }}
+          >
             <PencilIcon className="h-5 w-5" />
           </button>
           <button

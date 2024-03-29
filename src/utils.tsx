@@ -209,24 +209,30 @@ export const getNotes = async ({ userId, setNotes }: GetNotesInput) => {
   }
 };
 
-type EditNoteType = { name: string; tag: string };
+type UpdateNoteType = { name: string; tag: string };
 type UpdateNotesInput = {
-  e: React.MouseEvent<HTMLButtonElement, MouseEvent>;
+  e: React.FormEvent<HTMLFormElement>;
   noteId: string;
-  editNote: EditNoteType;
+  editNote: UpdateNoteType;
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 export const updateNotes = async ({
   e,
   noteId,
   editNote,
+  setMessage,
 }: UpdateNotesInput) => {
-  console.log("updateNotes");
-  console.log(e);
-  const response = await PUT<>(
-    `http://localhost:4000/api/v1/note/${noteId}`,
-    editNote
-  );
-  console.log("edit note", { response });
+  e.preventDefault();
+  try {
+    const response = await PUT<string, UpdateNoteType>(
+      `http://localhost:4000/api/v1/note/${noteId}`,
+      editNote
+    );
+    setMessage(response);
+    console.log("edit note", { response });
+  } catch (error) {
+    console.log("update note", { error });
+  }
 };
 
 type DeleteNotesInput = {
