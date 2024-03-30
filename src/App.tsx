@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { deleteNotes, getNotes, signOut } from "./utils";
+import { deleteNotes, getNotes, getTags, signOut } from "./utils";
 
 import { SignUpForm } from "./components/SignUpForm";
 import { SignInForm } from "./components/SignInForm";
@@ -18,6 +18,15 @@ export type NoteType = {
   _id: string;
 };
 
+export type TagType = {
+  createdAt: string;
+  name: string;
+  updatedAt: string;
+  user: string;
+  __v: number;
+  _id: string;
+};
+
 function App() {
   const [userId, setUserId] = useState("");
   const [auth, setAuth] = useState(false);
@@ -25,10 +34,12 @@ function App() {
   const [refreshToken, setRefreshToken] = useState("");
   const [accessToken, setAccessToken] = useState("");
   const [notes, setNotes] = useState<NoteType[]>([]);
+  const [tags, setTags] = useState<TagType[]>([]);
   const [message, setMessage] = useState("");
   const [displayPostNoteForm, setDisplayPostNoteForm] = useState(false);
   const [displayPostTagForm, setDisplayPostTagForm] = useState(false);
   const [displayUpdateNoteForm, setDisplayUpdateNoteForm] = useState(false);
+  const [displayAllTags, setDisplayAllTags] = useState(false);
 
   console.log({ auth });
   console.log({ notes });
@@ -119,6 +130,16 @@ function App() {
               <ul className="flex items-center gap-10">
                 <li>
                   <button
+                    onClick={() => {
+                      getTags({ userId: userId, setTags: setTags });
+                      setDisplayAllTags((prev) => !prev);
+                    }}
+                  >
+                    Get Tags
+                  </button>
+                </li>
+                <li>
+                  <button
                     type="button"
                     className={`border-[2px] py-1 px-2 rounded-full  border-violet-700 hover:bg-violet-600 hover:text-neutral-50 ${
                       displayPostTagForm && !displayPostNoteForm
@@ -169,31 +190,43 @@ function App() {
               {/* </div> */}
             </section>
             <section className=" py-8 flex gap-8 flex-col items-center text-sm w-full justify-center">
-              {notes.reverse().map((cur) => (
-                <>
-                  <Note
-                    key={cur._id}
-                    content={cur.name}
-                    tag={cur.tag}
-                    updateNote={() => setDisplayUpdateNoteForm(true)}
-                    onDelete={() => {
-                      console.log(cur);
-                      deleteNotes({ noteId: cur._id, setMessage: setMessage });
-                    }}
-                    getNotes={allNotes}
-                  />
-                  {displayUpdateNoteForm && (
-                    <UpdateNoteForm
-                      noteId={cur._id}
-                      initialTag={cur.tag}
-                      initialNote={cur.name}
-                      setDisplayUpdateNoteForm={setDisplayUpdateNoteForm}
+              {!displayAllTags &&
+                notes.reverse().map((cur) => (
+                  <>
+                    <Note
+                      key={cur._id}
+                      content={cur.name}
+                      tag={cur.tag}
+                      updateNote={() => setDisplayUpdateNoteForm(true)}
+                      onDelete={() => {
+                        console.log(cur);
+                        deleteNotes({
+                          noteId: cur._id,
+                          setMessage: setMessage,
+                        });
+                      }}
                       getNotes={allNotes}
-                      setMessage={setMessage}
                     />
-                  )}
-                </>
-              ))}
+                    {displayUpdateNoteForm && (
+                      <UpdateNoteForm
+                        noteId={cur._id}
+                        initialTag={cur.tag}
+                        initialNote={cur.name}
+                        setDisplayUpdateNoteForm={setDisplayUpdateNoteForm}
+                        getNotes={allNotes}
+                        setMessage={setMessage}
+                      />
+                    )}
+                  </>
+                ))}
+              {displayAllTags &&
+                tags.map((cur) => (
+                  <>
+                    <ul className="border border-red-600">
+                      <li key={cur._id}>{cur.name}</li>
+                    </ul>
+                  </>
+                ))}
             </section>
           </>
         )}

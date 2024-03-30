@@ -1,4 +1,4 @@
-import { NoteType } from "./App";
+import { NoteType, TagType } from "./App";
 import { DELETE, GET, POST, PUT } from "./fetch.utils";
 
 // SIGN UP
@@ -158,13 +158,20 @@ export const postTag = async ({ e, newTag, setMessage }: PostTagInput) => {
   }
 };
 
-export const getTag = () => {
+type GetTagsInput = {
+  userId: string;
+  setTags: React.Dispatch<React.SetStateAction<TagType[]>>;
+};
+
+export const getTags = async ({ userId, setTags }: GetTagsInput) => {
   console.log("getTag");
   // e.preventDefault();
-  // const response: ResponseDataType = await POST(
-  //   "http://localhost:4000/api/v1/user/:user"
-  // );
-  // console.log({ response });
+  // /user/:user
+  const response: ResponseDataType = await GET<TagType[]>(
+    `http://localhost:4000/api/v1/tag/user/${userId}`
+  );
+  setTags(response);
+  console.log("gat tags", { response });
 };
 
 export const updateTag = () => {
