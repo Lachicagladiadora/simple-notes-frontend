@@ -165,21 +165,50 @@ type GetTagsInput = {
 
 export const getTags = async ({ userId, setTags }: GetTagsInput) => {
   console.log("getTag");
-  // e.preventDefault();
-  // /user/:user
-  const response: ResponseDataType = await GET<TagType[]>(
+  const response = await GET<TagType[]>(
     `http://localhost:4000/api/v1/tag/user/${userId}`
   );
   setTags(response);
   console.log("gat tags", { response });
 };
 
-export const updateTag = () => {
-  console.log("updateTag");
+type UpdateTag = { name: string; user: string };
+
+type UpdateTagInput = {
+  e: React.FormEvent<HTMLFormElement>;
+  tagId: string;
+  body: UpdateTag;
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export const deleteTag = () => {
+export const updateTag = async ({
+  e,
+  tagId,
+  body,
+  setMessage,
+}: UpdateTagInput) => {
+  e.preventDefault();
+  console.log("updateTag");
+  const response = await PUT<string, UpdateTag>(
+    `http://localhost:4000/api/v1/tag/${tagId}`,
+    body
+  );
+  console.log("", { response });
+  setMessage(response);
+};
+
+type DeleteTagInput = {
+  tagId: string;
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export const deleteTag = async ({ tagId, setMessage }: DeleteTagInput) => {
   console.log("deleteTag");
+  const response = await DELETE<string>(
+    `http://localhost:4000/api/v1/tag/${tagId}`
+  );
+  setMessage(response);
+  console.log("delete tag", { response });
 };
 
 // NOTES

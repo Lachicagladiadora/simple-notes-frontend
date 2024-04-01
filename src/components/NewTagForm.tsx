@@ -4,12 +4,14 @@ import { postTag } from "../utils";
 type NewTagFormInput = {
   userId: string;
   setDisplayPostTagForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setDisplayAllTags: React.Dispatch<React.SetStateAction<boolean>>;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const NewTagForm = ({
   userId,
   setDisplayPostTagForm,
+  setDisplayAllTags,
   setMessage,
 }: NewTagFormInput) => {
   const [tagValue, setTagValue] = useState("");
@@ -25,7 +27,7 @@ export const NewTagForm = ({
         });
         setDisplayPostTagForm(false);
         setTagValue("");
-        // todo: get tags
+        setDisplayAllTags(true);
       }}
     >
       <h1 className="text-2xl text-purple-600">New Tag</h1>

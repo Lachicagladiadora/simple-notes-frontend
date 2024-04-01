@@ -3,16 +3,18 @@ import { postNote } from "../utils";
 
 type NewNoteFormInput = {
   userId: string;
-  setDisplayNoteForm: React.Dispatch<React.SetStateAction<boolean>>;
   getNotes: () => void;
+  setDisplayNoteForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setDisplayAllNotes: React.Dispatch<React.SetStateAction<boolean>>;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const NewNoteForm = ({
   userId,
-  setMessage,
-  setDisplayNoteForm,
   getNotes,
+  setDisplayNoteForm,
+  setDisplayAllNotes,
+  setMessage,
 }: NewNoteFormInput) => {
   const [noteValue, setNoteValue] = useState("");
   const [tagValue, setTagValue] = useState("");
@@ -30,6 +32,7 @@ export const NewNoteForm = ({
         setTagValue("");
         setNoteValue("");
         getNotes();
+        setDisplayAllNotes(true);
       }}
     >
       <h1 className="text-2xl text-purple-600">New Note</h1>

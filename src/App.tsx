@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { deleteNotes, getNotes, getTags, signOut } from "./utils";
+import { deleteNotes, deleteTag, getNotes, getTags, signOut } from "./utils";
 
 import { SignUpForm } from "./components/SignUpForm";
 import { SignInForm } from "./components/SignInForm";
@@ -8,6 +8,8 @@ import { Searcher } from "./components/Searcher";
 import { NewTagForm } from "./components/NewTagForm";
 import { NewNoteForm } from "./components/NewNoteForm";
 import { UpdateNoteForm } from "./components/UpdateNoteForm";
+import { Tag } from "./components/Tag";
+import { UpdateTagForm } from "./components/UpdateTagForm";
 
 export type NoteType = {
   name: string;
@@ -39,7 +41,9 @@ function App() {
   const [displayPostNoteForm, setDisplayPostNoteForm] = useState(false);
   const [displayPostTagForm, setDisplayPostTagForm] = useState(false);
   const [displayUpdateNoteForm, setDisplayUpdateNoteForm] = useState(false);
+  const [displayUpdateTagForm, setDisplayUpdateTagForm] = useState(false);
   const [displayAllTags, setDisplayAllTags] = useState(false);
+  const [displayAllNotes, setDisplayAllNotes] = useState(true);
 
   console.log({ auth });
   console.log({ notes });
@@ -65,7 +69,6 @@ function App() {
       const tokens = JSON.parse(tokensData);
       setRefreshToken(tokens.refreshToken);
       setAccessToken(tokens.accessToken);
-      // setAuth(true);
     }
   }, [accessToken, refreshToken]);
 
@@ -75,9 +78,14 @@ function App() {
     getNotes({ userId: userId, setNotes: setNotes });
   }, [userId]);
 
+  const allTags = useCallback(() => {
+    getTags({ userId: userId, setTags: setTags });
+  }, [userId]);
+
   useEffect(() => {
     if (!userId) return;
     getNotes({ userId: userId, setNotes: setNotes });
+    getTags({ userId: userId, setTags: setTags });
   }, [userId]);
 
   return (
@@ -130,12 +138,42 @@ function App() {
               <ul className="flex items-center gap-10">
                 <li>
                   <button
+                    type="button"
+                    className={`border-[2px] py-1 px-2 rounded-full  border-violet-700 hover:bg-violet-600 hover:text-neutral-50 ${
+                      displayAllNotes && !displayAllTags
+                        ? "text-neutral-50 bg-violet-600"
+                        : "border-violet-700 text-violet-700"
+                    }`}
                     onClick={() => {
-                      getTags({ userId: userId, setTags: setTags });
-                      setDisplayAllTags((prev) => !prev);
+                      // getTags({ userId: userId, setTags: setTags });
+                      allNotes();
+                      setDisplayAllNotes(true);
+                      setDisplayAllTags(false);
+                      setDisplayPostNoteForm(false);
+                      setDisplayPostTagForm(false);
                     }}
                   >
-                    Get Tags
+                    Notes
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className={`border-[2px] py-1 px-2 rounded-full  border-violet-700 hover:bg-violet-600 hover:text-neutral-50 ${
+                      !displayAllNotes && displayAllTags
+                        ? "text-neutral-50 bg-violet-600"
+                        : "border-violet-700 text-violet-700"
+                    }`}
+                    onClick={() => {
+                      // getTags({ userId: userId, setTags: setTags });
+                      allTags();
+                      setDisplayAllTags(true);
+                      setDisplayAllNotes(false);
+                      setDisplayPostNoteForm(false);
+                      setDisplayPostTagForm(false);
+                    }}
+                  >
+                    Tags
                   </button>
                 </li>
                 <li>
@@ -147,8 +185,10 @@ function App() {
                         : "border-violet-700 text-violet-700"
                     }`}
                     onClick={() => {
-                      setDisplayPostTagForm((prev) => !prev);
+                      setDisplayPostTagForm(true);
                       setDisplayPostNoteForm(false);
+                      setDisplayAllNotes(false);
+                      setDisplayAllTags(false);
                     }}
                   >
                     New tag
@@ -163,35 +203,46 @@ function App() {
                         : "border-violet-700 text-violet-700"
                     }`}
                     onClick={() => {
-                      setDisplayPostNoteForm((prev) => !prev);
+                      setDisplayPostNoteForm(true);
                       setDisplayPostTagForm(false);
+                      setDisplayAllNotes(false);
+                      setDisplayAllTags(false);
                     }}
                   >
                     New note
                   </button>
                 </li>
               </ul>
-              {/* <div className="w-full"> */}
-              {displayPostTagForm && !displayPostNoteForm && (
-                <NewTagForm
-                  userId={userId}
-                  setMessage={setMessage}
-                  setDisplayPostTagForm={setDisplayPostTagForm}
-                />
-              )}
-              {!displayPostTagForm && displayPostNoteForm && (
-                <NewNoteForm
-                  userId={userId}
-                  setMessage={setMessage}
-                  setDisplayNoteForm={setDisplayPostNoteForm}
-                  getNotes={allNotes}
-                />
-              )}
-              {/* </div> */}
             </section>
             <section className=" py-8 flex gap-8 flex-col items-center text-sm w-full justify-center">
               {!displayAllTags &&
-                notes.reverse().map((cur) => (
+                !displayAllNotes &&
+                displayPostTagForm &&
+                !displayPostNoteForm && (
+                  <NewTagForm
+                    userId={userId}
+                    setMessage={setMessage}
+                    setDisplayPostTagForm={setDisplayPostTagForm}
+                    setDisplayAllTags={setDisplayAllTags}
+                  />
+                )}
+              {!displayAllTags &&
+                !displayAllNotes &&
+                !displayPostTagForm &&
+                displayPostNoteForm && (
+                  <NewNoteForm
+                    userId={userId}
+                    setMessage={setMessage}
+                    getNotes={allNotes}
+                    setDisplayNoteForm={setDisplayPostNoteForm}
+                    setDisplayAllNotes={setDisplayAllNotes}
+                  />
+                )}
+              {displayAllNotes &&
+                !displayAllTags &&
+                !displayPostNoteForm &&
+                !displayPostTagForm &&
+                notes.map((cur) => (
                   <>
                     <Note
                       key={cur._id}
@@ -220,11 +271,33 @@ function App() {
                   </>
                 ))}
               {displayAllTags &&
+                !displayAllNotes &&
+                !displayPostNoteForm &&
+                !displayPostTagForm &&
                 tags.map((cur) => (
                   <>
-                    <ul className="border border-red-600">
-                      <li key={cur._id}>{cur.name}</li>
-                    </ul>
+                    <Tag
+                      key={cur._id}
+                      content={cur.name}
+                      onUpdateTag={() => setDisplayUpdateTagForm(true)}
+                      onDeleteTag={() => {
+                        deleteTag({ tagId: cur._id, setMessage: setMessage });
+                      }}
+                      getTags={allTags}
+                    />
+                    {displayUpdateTagForm && (
+                      <UpdateTagForm
+                        key={cur._id}
+                        userId={cur.user}
+                        tagId={cur._id}
+                        initialTag={cur.name}
+                        getTags={() =>
+                          getTags({ userId: cur.user, setTags: setTags })
+                        }
+                        setMessage={setMessage}
+                        setDisplayUpdateTagForm={setDisplayUpdateTagForm}
+                      />
+                    )}
                   </>
                 ))}
             </section>
