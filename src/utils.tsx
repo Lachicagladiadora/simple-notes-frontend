@@ -140,7 +140,7 @@ type PostTagInput = {
   e: React.FormEvent<HTMLFormElement>;
   newTag: NewTagType;
   // userId: string;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const postTag = async ({ e, newTag, setMessage }: PostTagInput) => {
@@ -165,20 +165,24 @@ type GetTagsInput = {
 
 export const getTags = async ({ userId, setTags }: GetTagsInput) => {
   console.log("getTag");
-  const response = await GET<TagType[]>(
-    `http://localhost:4000/api/v1/tag/user/${userId}`
-  );
-  setTags(response);
-  console.log("gat tags", { response });
+  try {
+    const response = await GET<TagType[]>(
+      `http://localhost:4000/api/v1/tag/user/${userId}`
+    );
+    setTags(response);
+    console.log("gat tags", { response });
+  } catch (error) {
+    console.log("get tags", { error });
+  }
 };
 
 type UpdateTag = { name: string; user: string };
 
 type UpdateTagInput = {
   e: React.FormEvent<HTMLFormElement>;
-  tagId: string;
+  tagId: string | null;
   body: UpdateTag;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const updateTag = async ({
@@ -188,27 +192,35 @@ export const updateTag = async ({
   setMessage,
 }: UpdateTagInput) => {
   e.preventDefault();
-  console.log("updateTag");
-  const response = await PUT<string, UpdateTag>(
-    `http://localhost:4000/api/v1/tag/${tagId}`,
-    body
-  );
-  console.log("", { response });
-  setMessage(response);
+  try {
+    console.log("updateTag");
+    const response = await PUT<string, UpdateTag>(
+      `http://localhost:4000/api/v1/tag/${tagId}`,
+      body
+    );
+    console.log("", { response });
+    setMessage(response);
+  } catch (error) {
+    console.log("update tag", { error });
+  }
 };
 
 type DeleteTagInput = {
   tagId: string;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const deleteTag = async ({ tagId, setMessage }: DeleteTagInput) => {
   console.log("deleteTag");
-  const response = await DELETE<string>(
-    `http://localhost:4000/api/v1/tag/${tagId}`
-  );
-  setMessage(response);
-  console.log("delete tag", { response });
+  try {
+    const response = await DELETE<string>(
+      `http://localhost:4000/api/v1/tag/${tagId}`
+    );
+    setMessage(response);
+    console.log("delete tag", { response });
+  } catch (error) {
+    console.log("delete tag", { error });
+  }
 };
 
 // NOTES
@@ -221,7 +233,7 @@ export type NewNoteType = {
 type PostNoteInput = {
   e: React.FormEvent<HTMLFormElement>;
   newNote: NewNoteType;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const postNote = async ({ e, newNote, setMessage }: PostNoteInput) => {
@@ -258,9 +270,9 @@ type UpdateNoteType = { name: string; tag: string };
 
 type UpdateNotesInput = {
   e: React.FormEvent<HTMLFormElement>;
-  noteId: string;
+  noteId: string | null;
   editNote: UpdateNoteType;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const updateNotes = async ({
@@ -284,7 +296,7 @@ export const updateNotes = async ({
 
 type DeleteNotesInput = {
   noteId: string;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const deleteNotes = async ({ noteId, setMessage }: DeleteNotesInput) => {

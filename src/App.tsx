@@ -3,12 +3,14 @@ import { deleteNotes, deleteTag, getNotes, getTags, signOut } from "./utils";
 
 import { SignUpForm } from "./components/SignUpForm";
 import { SignInForm } from "./components/SignInForm";
-import { Note } from "./components/Note";
 import { Searcher } from "./components/Searcher";
-import { NewTagForm } from "./components/NewTagForm";
+
+import { Note } from "./components/Note";
 import { NewNoteForm } from "./components/NewNoteForm";
 import { UpdateNoteForm } from "./components/UpdateNoteForm";
+
 import { Tag } from "./components/Tag";
+import { NewTagForm } from "./components/NewTagForm";
 import { UpdateTagForm } from "./components/UpdateTagForm";
 
 export type NoteType = {
@@ -36,8 +38,10 @@ function App() {
   const [refreshToken, setRefreshToken] = useState("");
   const [accessToken, setAccessToken] = useState("");
   const [notes, setNotes] = useState<NoteType[]>([]);
+  const [noteId, setNoteId] = useState<string | null>(null);
   const [tags, setTags] = useState<TagType[]>([]);
-  const [message, setMessage] = useState("");
+  const [tagId, setTagId] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const [displayPostNoteForm, setDisplayPostNoteForm] = useState(false);
   const [displayPostTagForm, setDisplayPostTagForm] = useState(false);
   const [displayUpdateNoteForm, setDisplayUpdateNoteForm] = useState(false);
@@ -46,11 +50,11 @@ function App() {
   const [displayAllNotes, setDisplayAllNotes] = useState(true);
 
   console.log({ auth });
-  console.log({ notes });
 
   const signInDisplay = !auth && displaySignInForm ? "Sign up" : "Sign in";
 
   console.log({ refreshToken }, { accessToken });
+
   useEffect(() => {
     const tokensData = localStorage.getItem("Tokens Data");
 
@@ -72,7 +76,39 @@ function App() {
     }
   }, [accessToken, refreshToken]);
 
-  console.log({ notes });
+  const getTagId = (tagValue: string, tags: TagType[]): string | null => {
+    const tagIdObtained = tags.filter((cur) => {
+      if (cur.name === tagValue) {
+        const idObtained = cur._id;
+        return idObtained;
+      }
+    })[0];
+    return tagIdObtained._id;
+  };
+
+  const getNoteId = (tagValue: string, notes: NoteType[]): string | null => {
+    const noteIdObtained = notes.filter((cur) => {
+      if (cur.tag === tagValue) {
+        const idObtained = cur._id;
+        return idObtained;
+      }
+    })[0];
+    return noteIdObtained._id;
+  };
+
+  const getNoteValue = (tagValue: string, notes: NoteType[]): string => {
+    const noteValueObtained = notes.filter((cur) => {
+      if (cur.tag === tagValue) {
+        const valueObtained = cur.name;
+        return valueObtained;
+      }
+    })[0];
+    return noteValueObtained.name;
+  };
+
+  setTimeout(() => {
+    setMessage(null);
+  }, 1000);
 
   const allNotes = useCallback(() => {
     getNotes({ userId: userId, setNotes: setNotes });
@@ -145,7 +181,6 @@ function App() {
                         : "border-violet-700 text-violet-700"
                     }`}
                     onClick={() => {
-                      // getTags({ userId: userId, setTags: setTags });
                       allNotes();
                       setDisplayAllNotes(true);
                       setDisplayAllTags(false);
@@ -165,7 +200,6 @@ function App() {
                         : "border-violet-700 text-violet-700"
                     }`}
                     onClick={() => {
-                      // getTags({ userId: userId, setTags: setTags });
                       allTags();
                       setDisplayAllTags(true);
                       setDisplayAllNotes(false);
@@ -248,6 +282,8 @@ function App() {
                       key={cur._id}
                       content={cur.name}
                       tag={cur.tag}
+                      noteId={cur._id}
+                      setNoteId={setNoteId}
                       updateNote={() => setDisplayUpdateNoteForm(true)}
                       onDelete={() => {
                         console.log(cur);
@@ -258,18 +294,28 @@ function App() {
                       }}
                       getNotes={allNotes}
                     />
-                    {displayUpdateNoteForm && (
+                  </>
+                ))}
+              {displayUpdateNoteForm &&
+                !displayAllTags &&
+                !displayPostNoteForm &&
+                !displayPostTagForm &&
+                notes.map(
+                  (cur) =>
+                    cur._id === noteId && (
                       <UpdateNoteForm
-                        noteId={cur._id}
+                        key={cur._id}
+                        userId={cur.user}
+                        noteId={noteId}
+                        tagId={getTagId(cur.tag, tags)}
                         initialTag={cur.tag}
                         initialNote={cur.name}
                         setDisplayUpdateNoteForm={setDisplayUpdateNoteForm}
                         getNotes={allNotes}
                         setMessage={setMessage}
                       />
-                    )}
-                  </>
-                ))}
+                    )
+                )}
               {displayAllTags &&
                 !displayAllNotes &&
                 !displayPostNoteForm &&
@@ -278,6 +324,8 @@ function App() {
                   <>
                     <Tag
                       key={cur._id}
+                      tagId={cur._id}
+                      setTagId={setTagId}
                       content={cur.name}
                       onUpdateTag={() => setDisplayUpdateTagForm(true)}
                       onDeleteTag={() => {
@@ -285,11 +333,21 @@ function App() {
                       }}
                       getTags={allTags}
                     />
-                    {displayUpdateTagForm && (
+                  </>
+                ))}
+              {displayUpdateTagForm &&
+                !displayAllNotes &&
+                !displayPostNoteForm &&
+                !displayPostTagForm &&
+                tags.map(
+                  (cur) =>
+                    cur._id === tagId && (
                       <UpdateTagForm
                         key={cur._id}
                         userId={cur.user}
-                        tagId={cur._id}
+                        tagId={tagId}
+                        noteId={getNoteId(cur.name, notes)}
+                        noteValue={getNoteValue(cur.name, notes)}
                         initialTag={cur.name}
                         getTags={() =>
                           getTags({ userId: cur.user, setTags: setTags })
@@ -297,9 +355,8 @@ function App() {
                         setMessage={setMessage}
                         setDisplayUpdateTagForm={setDisplayUpdateTagForm}
                       />
-                    )}
-                  </>
-                ))}
+                    )
+                )}
             </section>
           </>
         )}

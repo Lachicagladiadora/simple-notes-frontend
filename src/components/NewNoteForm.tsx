@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { postNote } from "../utils";
+import { postNote, postTag } from "../utils";
 
 type NewNoteFormInput = {
   userId: string;
   getNotes: () => void;
   setDisplayNoteForm: React.Dispatch<React.SetStateAction<boolean>>;
   setDisplayAllNotes: React.Dispatch<React.SetStateAction<boolean>>;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const NewNoteForm = ({
@@ -26,6 +26,11 @@ export const NewNoteForm = ({
         postNote({
           e: e,
           newNote: { name: noteValue, tag: tagValue, user: userId },
+          setMessage: setMessage,
+        });
+        postTag({
+          e: e,
+          newTag: { name: tagValue, user: userId },
           setMessage: setMessage,
         });
         setDisplayNoteForm(false);

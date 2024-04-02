@@ -8,17 +8,21 @@ import { useState } from "react";
 type NoteProps = {
   tag: string;
   content: string;
+  noteId: string;
   updateNote: () => void;
   onDelete: () => void;
   getNotes: () => void;
+  setNoteId: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const Note = ({
   tag,
   content,
+  noteId,
   updateNote,
   onDelete,
   getNotes,
+  setNoteId,
 }: NoteProps) => {
   const [mouseInNote, setMouseInNote] = useState(false);
 
@@ -26,8 +30,13 @@ export const Note = ({
     <a
       href="/api/note"
       className="w-3/4 hover:bg-pink-600 hover:opacity-70 hover:rounded-3xl"
-      onMouseOver={() => setMouseInNote(true)}
-      onMouseOut={() => setMouseInNote(false)}
+      onMouseOver={() => {
+        setNoteId(noteId);
+        setMouseInNote(true);
+      }}
+      onMouseOut={() => {
+        setMouseInNote(false);
+      }}
     >
       <div className="relative bg-violet-200 p-6 rounded-3xl">
         <div

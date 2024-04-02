@@ -1,18 +1,22 @@
 import { XCircleIcon } from "@heroicons/react/16/solid";
 import { useState } from "react";
-import { updateNotes } from "../utils";
+import { updateNotes, updateTag } from "../utils";
 
 type UpdateNoteFormInput = {
-  noteId: string;
+  userId: string;
+  noteId: string | null;
+  tagId: string | null;
   initialTag: string;
   initialNote: string;
   setDisplayUpdateNoteForm: React.Dispatch<React.SetStateAction<boolean>>;
   getNotes: () => void;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const UpdateNoteForm = ({
+  userId,
   noteId,
+  tagId,
   initialTag,
   initialNote,
   setDisplayUpdateNoteForm,
@@ -32,6 +36,12 @@ export const UpdateNoteForm = ({
             e: e,
             noteId: noteId,
             editNote: { tag: tagValue, name: noteValue },
+            setMessage: setMessage,
+          });
+          updateTag({
+            e: e,
+            tagId: tagId,
+            body: { name: tagValue, user: userId },
             setMessage: setMessage,
           });
           getNotes();

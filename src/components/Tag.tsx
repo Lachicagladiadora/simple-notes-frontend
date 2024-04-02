@@ -3,23 +3,30 @@ import { useState } from "react";
 
 type TagInput = {
   content: string;
+  tagId: string | null;
   onUpdateTag: () => void;
   onDeleteTag: () => void;
   getTags: () => void;
+  setTagId: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const Tag = ({
   content,
+  tagId,
   onUpdateTag,
   onDeleteTag,
   getTags,
+  setTagId,
 }: TagInput) => {
   const [mouseInNote, setMouseInNote] = useState(false);
 
   return (
     <div
-      className="relative bg-violet-200 p-6 rounded-3xl"
-      onMouseOver={() => setMouseInNote(true)}
+      className="relative bg-violet-200 p-6 rounded-3xl capitalize"
+      onMouseOver={() => {
+        setMouseInNote(true);
+        setTagId(tagId);
+      }}
       onMouseOut={() => setMouseInNote(false)}
     >
       <div

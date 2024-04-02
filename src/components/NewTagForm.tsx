@@ -5,7 +5,7 @@ type NewTagFormInput = {
   userId: string;
   setDisplayPostTagForm: React.Dispatch<React.SetStateAction<boolean>>;
   setDisplayAllTags: React.Dispatch<React.SetStateAction<boolean>>;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const NewTagForm = ({
