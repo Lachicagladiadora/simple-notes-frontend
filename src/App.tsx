@@ -167,7 +167,7 @@ function App() {
             setUserId={setUserId}
           />
         )}
-        {auth && <Searcher />}
+        {auth && <Searcher tags={tags} notes={notes} />}
         {auth && (
           <>
             <section className="w-full flex flex-col justify-center items-center">
