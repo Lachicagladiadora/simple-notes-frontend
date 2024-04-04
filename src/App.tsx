@@ -76,19 +76,19 @@ function App() {
     }
   }, [accessToken, refreshToken]);
 
-  const getTagId = (tagValue: string, tags: TagType[]): string | null => {
-    const tagIdObtained = tags.filter((cur) => {
-      if (cur.name === tagValue) {
-        const idObtained = cur._id;
-        return idObtained;
-      }
-    })[0];
-    return tagIdObtained._id;
-  };
+  // const getTagId = (tagValue: string, tags: TagType[]): string | null => {
+  //   const tagIdObtained = tags.filter((cur) => {
+  //     if (cur.name === tagValue) {
+  //       const idObtained = cur._id;
+  //       return idObtained;
+  //     }
+  //   })[0];
+  //   return tagIdObtained._id;
+  // };
 
-  const getNoteId = (tagValue: string, notes: NoteType[]): string | null => {
+  const getNoteId = (tagId: string, notes: NoteType[]): string | null => {
     const noteIdObtained = notes.filter((cur) => {
-      if (cur.tag === tagValue) {
+      if (cur.tag === tagId) {
         const idObtained = cur._id;
         return idObtained;
       }
@@ -307,7 +307,7 @@ function App() {
                         key={cur._id}
                         userId={cur.user}
                         noteId={noteId}
-                        tagId={getTagId(cur.tag, tags)}
+                        tagId={cur.tag}
                         initialTag={cur.tag}
                         initialNote={cur.name}
                         setDisplayUpdateNoteForm={setDisplayUpdateNoteForm}
@@ -346,7 +346,7 @@ function App() {
                         key={cur._id}
                         userId={cur.user}
                         tagId={tagId}
-                        noteId={getNoteId(cur.name, notes)}
+                        noteId={getNoteId(cur._id, notes)}
                         noteValue={getNoteValue(cur.name, notes)}
                         initialTag={cur.name}
                         getTags={() =>

@@ -12,8 +12,6 @@ export const Searcher = ({ tags, notes }: SearcherInput) => {
   const [tagsFiltered, setTagsFiltered] = useState<TagType[]>([]);
   const [notesFiltered, setNotesFiltered] = useState<NoteType[]>([]);
 
-  // const newNotes = notes.filter((cur) => cur.name.includes(searchValue));
-
   type UpdateTagsFilteredInput = {
     word: string;
     updateFilterTags: React.Dispatch<React.SetStateAction<TagType[]>>;

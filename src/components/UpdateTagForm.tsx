@@ -47,7 +47,7 @@ export const UpdateTagForm = ({
           setDisplayUpdateTagForm(false);
         }}
       >
-        <h1 className="text-xl text-purple-600">Edit note</h1>
+        <h1 className="text-xl text-purple-600">Edit tag</h1>
         <label htmlFor="tag" className="text-purple-800 opacity-80">
           Tag
         </label>
