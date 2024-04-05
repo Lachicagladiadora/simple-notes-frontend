@@ -50,6 +50,8 @@ function App() {
   const [displayAllNotes, setDisplayAllNotes] = useState(true);
 
   console.log({ auth });
+  console.log({ tagId }, { tags });
+  console.log({ noteId }, { notes });
 
   const signInDisplay = !auth && displaySignInForm ? "Sign up" : "Sign in";
 
