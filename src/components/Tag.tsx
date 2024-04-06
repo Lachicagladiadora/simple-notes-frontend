@@ -23,9 +23,9 @@ export const Tag = ({
   return (
     <div
       className="relative bg-violet-200 p-6 rounded-3xl capitalize"
+      onClick={() => setTagId(tagId)}
       onMouseOver={() => {
         setMouseInNote(true);
-        setTagId(tagId);
       }}
       onMouseOut={() => setMouseInNote(false)}
     >

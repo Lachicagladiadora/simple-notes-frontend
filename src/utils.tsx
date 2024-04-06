@@ -185,6 +185,8 @@ type UpdateTagInput = {
   setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
+// type ErrorType = { message: string; stack: string };
+
 export const updateTag = async ({
   e,
   tagId,
@@ -202,6 +204,7 @@ export const updateTag = async ({
     setMessage(response);
   } catch (error) {
     console.log("update tag", { error });
+    // setMessage(error.message);
   }
 };
 
@@ -226,7 +229,7 @@ export const deleteTag = async ({ tagId, setMessage }: DeleteTagInput) => {
 // NOTES
 export type NewNoteType = {
   name: string;
-  tag: string;
+  tag: string | null;
   user: string;
 };
 
@@ -247,6 +250,7 @@ export const postNote = async ({ e, newNote, setMessage }: PostNoteInput) => {
     setMessage(responseNote);
   } catch (error) {
     console.log("post note ", { error });
+    // setMessage(error.message);
   }
 };
 

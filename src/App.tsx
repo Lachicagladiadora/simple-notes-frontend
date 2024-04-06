@@ -268,6 +268,8 @@ function App() {
                 displayPostNoteForm && (
                   <NewNoteForm
                     userId={userId}
+                    tags={tags}
+                    setTags={setTags}
                     setMessage={setMessage}
                     getNotes={allNotes}
                     setDisplayNoteForm={setDisplayPostNoteForm}
@@ -283,7 +285,7 @@ function App() {
                     <Note
                       key={cur._id}
                       content={cur.name}
-                      tag={cur.tag}
+                      tag={tags.filter((curr) => curr._id === cur.tag)[0]}
                       noteId={cur._id}
                       setNoteId={setNoteId}
                       updateNote={() => setDisplayUpdateNoteForm(true)}
@@ -310,6 +312,7 @@ function App() {
                         userId={cur.user}
                         noteId={noteId}
                         tagId={cur.tag}
+                        tags={tags}
                         initialTag={cur.tag}
                         initialNote={cur.name}
                         setDisplayUpdateNoteForm={setDisplayUpdateNoteForm}

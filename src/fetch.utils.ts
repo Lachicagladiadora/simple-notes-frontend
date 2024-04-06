@@ -17,7 +17,7 @@ export const POST = async <R, P>(url: string, body?: P): Promise<R> => {
 export const GET = async <R>(url: string): Promise<R> => {
   const tokens = localStorage.getItem("Tokens Data");
   const accessToken = tokens ? JSON.parse(tokens).accessToken : "";
-
+  console.log("get");
   const res = await fetch(url, {
     method: "GET",
     headers: {
@@ -32,7 +32,7 @@ export const GET = async <R>(url: string): Promise<R> => {
 export const PUT = async <R, P>(url: string, body: P): Promise<R> => {
   const tokens = localStorage.getItem("Tokens Data");
   const accessToken = tokens ? JSON.parse(tokens).accessToken : "";
-
+  console.log("put");
   const res = await fetch(url, {
     method: "PUT",
     body: JSON.stringify(body),

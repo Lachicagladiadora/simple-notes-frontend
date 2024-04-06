@@ -4,9 +4,10 @@ import {
   ClipboardDocumentIcon,
 } from "@heroicons/react/16/solid";
 import { useState } from "react";
+import { TagType } from "../App";
 
 type NoteProps = {
-  tag: string;
+  tag: TagType;
   content: string;
   noteId: string;
   updateNote: () => void;
@@ -26,12 +27,13 @@ export const Note = ({
 }: NoteProps) => {
   const [mouseInNote, setMouseInNote] = useState(false);
 
+  console.log({ tag });
   return (
     <a
       href="/api/note"
       className="w-3/4 hover:bg-pink-600 hover:opacity-70 hover:rounded-3xl"
+      onClick={() => setNoteId(noteId)}
       onMouseOver={() => {
-        setNoteId(noteId);
         setMouseInNote(true);
       }}
       onMouseOut={() => {
@@ -75,7 +77,7 @@ export const Note = ({
               : "border-purple-800 text-purple-800"
           }`}
         >
-          # {tag}
+          # {`${tag ? tag.name : "not exist tag"}`}
         </span>
         <p
           className={`${

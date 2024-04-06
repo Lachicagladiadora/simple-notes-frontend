@@ -1,11 +1,14 @@
 import { XCircleIcon } from "@heroicons/react/16/solid";
 import { useState } from "react";
 import { updateNotes, updateTag } from "../utils";
+import { Select, SelectedOptionType } from "./Select";
+import { TagType } from "../App";
 
 type UpdateNoteFormInput = {
   userId: string;
   noteId: string | null;
-  tagId: string | null;
+  tagId: string;
+  tags: TagType[];
   initialTag: string;
   initialNote: string;
   setDisplayUpdateNoteForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,6 +20,7 @@ export const UpdateNoteForm = ({
   userId,
   noteId,
   tagId,
+  tags,
   initialTag,
   initialNote,
   setDisplayUpdateNoteForm,
@@ -25,6 +29,16 @@ export const UpdateNoteForm = ({
 }: UpdateNoteFormInput) => {
   const [tagValue, setTagValue] = useState(initialTag);
   const [noteValue, setNoteValue] = useState(initialNote);
+  // const [filterTag, setFilterTag] = useState<TagType[]>([]);
+
+  const newOptions: SelectedOptionType[] = tags.map((cur) =>
+    cur ? { label: cur.name, value: cur.name } : null
+  );
+  const initialTagValue = newOptions.filter((cur) => cur?.value === initialTag);
+  // const getTagId=()=>{
+  // }
+  // const tagId = tags.filter((cur) => cur.name === tagValue?.value);
+  // const updateTagValue:string = tagValue !== null ? tagValue.value : ''
 
   return (
     <div className="bg-purple-950 bg-opacity-40 h-full w-full absolute top-16 flex justify-center items-center">
@@ -35,30 +49,33 @@ export const UpdateNoteForm = ({
           updateNotes({
             e: e,
             noteId: noteId,
-            editNote: { tag: tagValue, name: noteValue },
+            editNote: {
+              tag: tagId,
+              name: noteValue,
+            },
             setMessage: setMessage,
           });
           updateTag({
             e: e,
             tagId: tagId,
-            body: { name: tagValue, user: userId },
+            body: {
+              name: tagValue,
+              user: userId,
+            },
             setMessage: setMessage,
           });
-          getNotes();
           setDisplayUpdateNoteForm(false);
+          getNotes();
         }}
       >
         <h1 className="text-xl text-purple-600">Edit note</h1>
         <label htmlFor="tag" className="text-purple-800 opacity-80">
           Tag
         </label>
-        <input
-          type="text"
-          id="tag"
-          className="border-[2px] border-purple-600 rounded-lg py-1 px-2 text-purple-950 focus:outline-none focus:border-[3px] focus-visible:border-violet-500"
-          placeholder="Write a tag"
-          value={tagValue}
-          onChange={(e) => setTagValue(e.target.value)}
+        <Select
+          selectedOption={initialTagValue[0]}
+          options={newOptions}
+          onChange={() => setTagValue(tagValue)}
         />
         <label htmlFor="note" className="text-purple-800 opacity-80">
           Note
