@@ -9,7 +9,6 @@ type SelectProps = {
   onChange: (newValue: string) => void;
 };
 export const Select = ({ selectedOption, options, onChange }: SelectProps) => {
-  console.log({ selectedOption, options });
   return (
     <select
       name="tags"

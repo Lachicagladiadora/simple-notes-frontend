@@ -45,11 +45,7 @@ function App() {
   const [selectedNote, setSelectedNote] = useState<NoteData | null>(null);
   const [selectedTag, setSelectedTag] = useState<TagData | null>(null);
 
-  console.log({ tags });
-
   const signInDisplay = !auth && displaySignInForm ? "Sign up" : "Sign in";
-
-  // console.log({ refreshToken }, { accessToken });
 
   useEffect(() => {
     const tokensData = localStorage.getItem("Tokens Data");
@@ -59,9 +55,7 @@ function App() {
         refreshToken: refreshToken,
         accessToken: accessToken,
       };
-      console.log("set 1", { tokensData });
       localStorage.setItem("Tokens Data", JSON.stringify(updateTokensData));
-      console.log("set 2", localStorage.getItem("Tokens Data"));
       setAuth(false);
     }
 
@@ -243,7 +237,6 @@ function App() {
                   <NewNoteForm
                     userId={userId}
                     tags={tags}
-                    // setTags={setTags}
                     getAllNotes={getAllNotes}
                     setMessage={setMessage}
                     setDisplayNoteForm={setDisplayPostNoteForm}

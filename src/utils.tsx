@@ -179,7 +179,6 @@ export const getTags = async ({ userId, setTags }: GetTagsInput) => {
 type UpdateTag = { name: string; user: string };
 
 type UpdateTagInput = {
-  e: React.FormEvent<HTMLFormElement>;
   tagId: string | null;
   body: UpdateTag;
   setMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -188,12 +187,10 @@ type UpdateTagInput = {
 // type ErrorType = { message: string; stack: string };
 
 export const updateTag = async ({
-  e,
   tagId,
   body,
   setMessage,
 }: UpdateTagInput) => {
-  e.preventDefault();
   try {
     console.log("updateTag");
     const response = await PUT<string, UpdateTag>(

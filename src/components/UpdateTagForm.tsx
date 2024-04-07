@@ -24,8 +24,8 @@ export const UpdateTagForm = ({
         action=""
         className="max-w-4xl bg-violet-50 border border-violet-950 p-6 rounded-xl flex flex-col relative"
         onSubmit={(e) => {
+          e.preventDefault();
           updateTag({
-            e: e,
             tagId: tag._id,
             body: { name: tagValue, user: tag.user },
             setMessage: setMessage,

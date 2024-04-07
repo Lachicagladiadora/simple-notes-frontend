@@ -30,7 +30,6 @@ export const Note = ({
           onClick={(e) => {
             e.preventDefault();
             setSelectedNote(note);
-            // getNotes();
           }}
         >
           <PencilIcon className="h-5 w-5" />

@@ -17,12 +17,6 @@ export const UpdateNoteForm = ({
   onSuccess,
   setMessage,
 }: UpdateNoteFormInput) => {
-  // const initialTagValue =
-  //   tags.find((curr) => curr._id === note.tag)?.name ?? "";
-
-  // const initialTag = tags.find((cur) => cur._id === note.tag);
-
-  // const [tagId, setTagId] = useState(initialTagValue);
   const [tagValue, setTagValue] = useState<TagData | null>(
     tags.find((cur) => cur._id === note.tag) ?? null
   );
@@ -31,13 +25,12 @@ export const UpdateNoteForm = ({
   const newOptions: SelectedOptionType[] = tags.map((cur) => {
     return { label: cur.name, value: cur._id };
   });
-  // const initialTag = newOptions.filter((cur) => cur?.value === initialTagValue);
+
   const onChangeTag = (tagId: string) => {
     const foundTag = tags.find((cur) => cur._id === tagId);
-    // return foundTag ? setTagValue(foundTag) : setTagValue(null)
     setTagValue(foundTag ?? null);
   };
-  console.log({ tagValue }, { note });
+
   return (
     <div className="bg-purple-950 bg-opacity-40 h-full w-full absolute top-16 flex justify-center items-center">
       <form

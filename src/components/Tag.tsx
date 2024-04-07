@@ -23,7 +23,6 @@ export const Tag = ({
           className="p-1 rounded-full text-fuchsia-950 hover:text-fuchsia-50 hover:bg-fuchsia-950 hover:text-2xl"
           type="button"
           onClick={() => {
-            // e.preventDefault();
             setSelectedTag(tag);
             console.log({ tag });
             getTags();

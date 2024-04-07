@@ -60,11 +60,6 @@ export const Searcher = ({ tags, notes }: SearcherInput) => {
         className={`border-2 border-fuchsia-950 rounded-full flex-1 py-2 px-4 text-violet-500 font-bold`}
       />
       <MagnifyingGlassIcon className="h-6 w-6 text-fuchsia-950 absolute right-3 opacity-50" />
-      {/* <button
-        type="button"
-        className="p-1 rounded-full border-2 border-fuchsia-950"
-      >
-      </button> */}
       {displayAutocomplete && (
         <div
           className={`w-11/12 px-6 py-2 absolute top-[72px] bg-fuchsia-50 rounded-b-3xl `}
