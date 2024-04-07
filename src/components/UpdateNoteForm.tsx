@@ -1,71 +1,60 @@
 import { XCircleIcon } from "@heroicons/react/16/solid";
 import { useState } from "react";
-import { updateNotes, updateTag } from "../utils";
+import { updateNotes } from "../utils";
 import { Select, SelectedOptionType } from "./Select";
-import { TagType } from "../App";
+import { NoteData, TagData } from "../App";
 
 type UpdateNoteFormInput = {
-  userId: string;
-  noteId: string | null;
-  tagId: string;
-  tags: TagType[];
-  initialTag: string;
-  initialNote: string;
-  setDisplayUpdateNoteForm: React.Dispatch<React.SetStateAction<boolean>>;
-  getNotes: () => void;
+  note: NoteData;
+  tags: TagData[];
+  onSuccess: () => void;
   setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const UpdateNoteForm = ({
-  userId,
-  noteId,
-  tagId,
+  note,
   tags,
-  initialTag,
-  initialNote,
-  setDisplayUpdateNoteForm,
-  getNotes,
+  onSuccess,
   setMessage,
 }: UpdateNoteFormInput) => {
-  const [tagValue, setTagValue] = useState(initialTag);
-  const [noteValue, setNoteValue] = useState(initialNote);
-  // const [filterTag, setFilterTag] = useState<TagType[]>([]);
+  // const initialTagValue =
+  //   tags.find((curr) => curr._id === note.tag)?.name ?? "";
 
-  const newOptions: SelectedOptionType[] = tags.map((cur) =>
-    cur ? { label: cur.name, value: cur.name } : null
+  // const initialTag = tags.find((cur) => cur._id === note.tag);
+
+  // const [tagId, setTagId] = useState(initialTagValue);
+  const [tagValue, setTagValue] = useState<TagData | null>(
+    tags.find((cur) => cur._id === note.tag) ?? null
   );
-  const initialTagValue = newOptions.filter((cur) => cur?.value === initialTag);
-  // const getTagId=()=>{
-  // }
-  // const tagId = tags.filter((cur) => cur.name === tagValue?.value);
-  // const updateTagValue:string = tagValue !== null ? tagValue.value : ''
+  const [noteName, setNoteName] = useState(note.name);
 
+  const newOptions: SelectedOptionType[] = tags.map((cur) => {
+    return { label: cur.name, value: cur._id };
+  });
+  // const initialTag = newOptions.filter((cur) => cur?.value === initialTagValue);
+  const onChangeTag = (tagId: string) => {
+    const foundTag = tags.find((cur) => cur._id === tagId);
+    // return foundTag ? setTagValue(foundTag) : setTagValue(null)
+    setTagValue(foundTag ?? null);
+  };
+  console.log({ tagValue }, { note });
   return (
     <div className="bg-purple-950 bg-opacity-40 h-full w-full absolute top-16 flex justify-center items-center">
       <form
         action=""
         className="max-w-4xl bg-violet-50 border border-violet-950 p-6 rounded-xl flex flex-col relative"
-        onSubmit={(e) => {
-          updateNotes({
+        onSubmit={async (e) => {
+          if (!tagValue) return;
+          await updateNotes({
             e: e,
-            noteId: noteId,
+            noteId: note._id,
             editNote: {
-              tag: tagId,
-              name: noteValue,
+              tag: tagValue._id,
+              name: noteName,
             },
             setMessage: setMessage,
           });
-          updateTag({
-            e: e,
-            tagId: tagId,
-            body: {
-              name: tagValue,
-              user: userId,
-            },
-            setMessage: setMessage,
-          });
-          setDisplayUpdateNoteForm(false);
-          getNotes();
+          onSuccess();
         }}
       >
         <h1 className="text-xl text-purple-600">Edit note</h1>
@@ -73,9 +62,11 @@ export const UpdateNoteForm = ({
           Tag
         </label>
         <Select
-          selectedOption={initialTagValue[0]}
+          selectedOption={
+            tagValue ? { label: tagValue.name, value: tagValue._id } : null
+          }
           options={newOptions}
-          onChange={() => setTagValue(tagValue)}
+          onChange={onChangeTag}
         />
         <label htmlFor="note" className="text-purple-800 opacity-80">
           Note
@@ -84,15 +75,15 @@ export const UpdateNoteForm = ({
           id="note"
           className="border-[2px] border-purple-600 rounded-lg py-1 px-2 text-purple-950 focus:outline-none focus:border-[3px] focus-visible:border-violet-500"
           placeholder="Write a note"
-          value={noteValue}
-          onChange={(e) => setNoteValue(e.target.value)}
+          value={noteName}
+          onChange={(e) => setNoteName(e.target.value)}
         />
         <button className="bg-purple-800 text-fuchsia-50 mt-6 p-2 rounded-full">
           Save
         </button>
         <button
           type="button"
-          onClick={() => setDisplayUpdateNoteForm(false)}
+          onClick={() => onSuccess()}
           className="absolute -top-2 -right-2 rounded-full text-purple-800"
         >
           <XCircleIcon className="h-8" />

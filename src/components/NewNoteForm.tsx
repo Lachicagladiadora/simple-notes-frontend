@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { postNote } from "../utils";
-import { TagType } from "../App";
+import { TagData } from "../App";
 import { Select, SelectedOptionType } from "./Select";
 
 type NewNoteFormInput = {
   userId: string;
-  tags: TagType[];
-  getNotes: () => void;
-  setTags: React.Dispatch<React.SetStateAction<TagType[]>>;
+  tags: TagData[];
+  getAllNotes: () => void;
   setDisplayNoteForm: React.Dispatch<React.SetStateAction<boolean>>;
   setDisplayAllNotes: React.Dispatch<React.SetStateAction<boolean>>;
   setMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -16,47 +15,46 @@ type NewNoteFormInput = {
 export const NewNoteForm = ({
   userId,
   tags,
-  getNotes,
+  getAllNotes,
   setDisplayNoteForm,
   setDisplayAllNotes,
   setMessage,
 }: NewNoteFormInput) => {
   const [noteValue, setNoteValue] = useState<string>("");
-  const [tagValue, setTagValue] = useState<{
-    label: string;
-    value: string;
-  } | null>(null);
-  const [filterTag, setFilterTag] = useState<TagType[]>([]);
+  const [tagValue, setTagValue] = useState<TagData | null>(null);
 
-  useEffect(() => {
-    const existInTags = tags.filter((cur) => cur.name !== tagValue?.value);
-    setFilterTag(existInTags);
-  }, [tagValue, tags]);
+  const options: SelectedOptionType[] = tags.map((cur) => {
+    return { label: cur.name, value: cur._id };
+  });
 
-  // const newOptions: SelectedOptionType[] = filterTag.map((cur) =>
-  //   cur ? { label: cur.name, value: cur.name } : null
-  // );
-  const xx = tags.filter((curr) => curr.name === tagValue?.value);
-  console.log("tag id for post", { xx });
+  const onChangeTag = (selectedId: string) => {
+    const foundTag = tags.find((cur) => cur._id === selectedId);
+    setTagValue(foundTag ?? null);
+  };
+
   return (
     <form
       className="flex flex-col mt-4 border-[2px] border-purple-800 rounded-xl p-4"
       onSubmit={(e) => {
-        postNote({
-          e: e,
-          newNote: {
-            name: noteValue,
-            tag: tags.filter((curr) => curr.name === tagValue?.value)[0]._id,
-            user: userId,
-          },
-          setMessage: setMessage,
-        });
+        if (tagValue) {
+          postNote({
+            e: e,
+            newNote: {
+              name: noteValue,
+              tag: tagValue._id,
+              user: userId,
+            },
+            setMessage: setMessage,
+          });
 
-        setDisplayNoteForm(false);
-        setTagValue(null);
-        setNoteValue("");
-        getNotes();
-        setDisplayAllNotes(true);
+          setDisplayNoteForm(false);
+          setTagValue(null);
+          setNoteValue("");
+          getAllNotes();
+          setDisplayAllNotes(true);
+        } else {
+          setMessage("error with tag");
+        }
       }}
     >
       <h1 className="text-2xl text-purple-600">New Note</h1>
@@ -64,11 +62,11 @@ export const NewNoteForm = ({
         Tag
       </label>
       <Select
-        selectedOption={tagValue}
-        options={filterTag.map((cur) =>
-          cur ? { label: cur.name, value: cur.name } : null
-        )}
-        onChange={() => setTagValue(tagValue)}
+        selectedOption={
+          tagValue ? { label: tagValue.name, value: tagValue._id } : null
+        }
+        options={options}
+        onChange={onChangeTag}
       />
       <label htmlFor="note" className="text-purple-800 opacity-80">
         Note

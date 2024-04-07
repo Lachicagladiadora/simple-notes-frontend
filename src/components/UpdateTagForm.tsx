@@ -1,29 +1,22 @@
 import { XCircleIcon } from "@heroicons/react/16/solid";
 import { useState } from "react";
-import { updateNotes, updateTag } from "../utils";
+import { updateTag } from "../utils";
+import { TagData } from "../App";
 
 type UpdateTagFormInput = {
-  tagId: string | null;
-  noteId: string | null;
-  noteValue: string;
-  initialTag: string;
-  userId: string;
+  tag: TagData;
+  onSuccess: () => void;
   getTags: () => void;
-  setDisplayUpdateTagForm: React.Dispatch<React.SetStateAction<boolean>>;
   setMessage: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const UpdateTagForm = ({
-  tagId,
-  noteId,
-  noteValue,
-  initialTag,
-  userId,
-  setDisplayUpdateTagForm,
+  tag,
+  onSuccess,
   getTags,
   setMessage,
 }: UpdateTagFormInput) => {
-  const [tagValue, setTagValue] = useState(initialTag);
+  const [tagValue, setTagValue] = useState(tag.name);
 
   return (
     <div className="bg-purple-950 bg-opacity-40 h-full w-full absolute top-16 flex justify-center items-center">
@@ -33,18 +26,12 @@ export const UpdateTagForm = ({
         onSubmit={(e) => {
           updateTag({
             e: e,
-            tagId: tagId,
-            body: { name: tagValue, user: userId },
+            tagId: tag._id,
+            body: { name: tagValue, user: tag.user },
             setMessage: setMessage,
           });
-          updateNotes({
-            e: e,
-            noteId: noteId,
-            editNote: { tag: tagValue, name: noteValue },
-            setMessage: setMessage,
-          });
+          onSuccess();
           getTags();
-          setDisplayUpdateTagForm(false);
         }}
       >
         <h1 className="text-xl text-purple-600">Edit tag</h1>
@@ -65,7 +52,7 @@ export const UpdateTagForm = ({
         </button>
         <button
           type="button"
-          onClick={() => setDisplayUpdateTagForm(false)}
+          onClick={onSuccess}
           className="absolute -top-2 -right-2 rounded-full text-purple-800"
         >
           <XCircleIcon className="h-8" />

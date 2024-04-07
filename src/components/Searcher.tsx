@@ -1,26 +1,26 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
-import { NoteType, TagType } from "../App";
+import { NoteData, TagData } from "../App";
 import { useEffect, useState } from "react";
 
 type SearcherInput = {
-  tags: TagType[];
-  notes: NoteType[];
+  tags: TagData[];
+  notes: NoteData[];
 };
 
 export const Searcher = ({ tags, notes }: SearcherInput) => {
   const [displayAutocomplete, setDisplayAutocomplete] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [tagsFiltered, setTagsFiltered] = useState<TagType[]>([]);
-  const [notesFiltered, setNotesFiltered] = useState<NoteType[]>([]);
+  const [tagsFiltered, setTagsFiltered] = useState<TagData[]>([]);
+  const [notesFiltered, setNotesFiltered] = useState<NoteData[]>([]);
 
   type UpdateTagsFilteredInput = {
     word: string;
-    updateFilterTags: React.Dispatch<React.SetStateAction<TagType[]>>;
+    updateFilterTags: React.Dispatch<React.SetStateAction<TagData[]>>;
   };
 
   type UpdateNotesFilteredInput = {
     word: string;
-    updateFilterNotes: React.Dispatch<React.SetStateAction<NoteType[]>>;
+    updateFilterNotes: React.Dispatch<React.SetStateAction<NoteData[]>>;
   };
 
   useEffect(() => {

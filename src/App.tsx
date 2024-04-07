@@ -13,21 +13,19 @@ import { Tag } from "./components/Tag";
 import { NewTagForm } from "./components/NewTagForm";
 import { UpdateTagForm } from "./components/UpdateTagForm";
 
-export type NoteType = {
+export type NoteData = {
   name: string;
   tag: string;
   updatedAt: string;
   user: string;
-  __v: number;
   _id: string;
 };
 
-export type TagType = {
+export type TagData = {
   createdAt: string;
   name: string;
   updatedAt: string;
   user: string;
-  __v: number;
   _id: string;
 };
 
@@ -37,25 +35,21 @@ function App() {
   const [displaySignInForm, setDisplaySignInForm] = useState(false);
   const [refreshToken, setRefreshToken] = useState("");
   const [accessToken, setAccessToken] = useState("");
-  const [notes, setNotes] = useState<NoteType[]>([]);
-  const [noteId, setNoteId] = useState<string | null>(null);
-  const [tags, setTags] = useState<TagType[]>([]);
-  const [tagId, setTagId] = useState<string | null>(null);
+  const [notes, setNotes] = useState<NoteData[]>([]);
+  const [tags, setTags] = useState<TagData[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [displayPostNoteForm, setDisplayPostNoteForm] = useState(false);
   const [displayPostTagForm, setDisplayPostTagForm] = useState(false);
-  const [displayUpdateNoteForm, setDisplayUpdateNoteForm] = useState(false);
-  const [displayUpdateTagForm, setDisplayUpdateTagForm] = useState(false);
   const [displayAllTags, setDisplayAllTags] = useState(false);
   const [displayAllNotes, setDisplayAllNotes] = useState(true);
+  const [selectedNote, setSelectedNote] = useState<NoteData | null>(null);
+  const [selectedTag, setSelectedTag] = useState<TagData | null>(null);
 
-  console.log({ auth });
-  console.log({ tagId }, { tags });
-  console.log({ noteId }, { notes });
+  console.log({ tags });
 
   const signInDisplay = !auth && displaySignInForm ? "Sign up" : "Sign in";
 
-  console.log({ refreshToken }, { accessToken });
+  // console.log({ refreshToken }, { accessToken });
 
   useEffect(() => {
     const tokensData = localStorage.getItem("Tokens Data");
@@ -78,45 +72,24 @@ function App() {
     }
   }, [accessToken, refreshToken]);
 
-  // const getTagId = (tagValue: string, tags: TagType[]): string | null => {
-  //   const tagIdObtained = tags.filter((cur) => {
-  //     if (cur.name === tagValue) {
-  //       const idObtained = cur._id;
-  //       return idObtained;
-  //     }
-  //   })[0];
-  //   return tagIdObtained._id;
-  // };
-
-  const getNoteId = (tagId: string, notes: NoteType[]): string | null => {
-    const noteIdObtained = notes.filter((cur) => {
-      if (cur.tag === tagId) {
-        const idObtained = cur._id;
-        return idObtained;
-      }
-    })[0];
-    return noteIdObtained._id;
+  const onSuccessNote = () => {
+    setSelectedNote(null);
+    getAllNotes();
   };
 
-  const getNoteValue = (tagValue: string, notes: NoteType[]): string => {
-    const noteValueObtained = notes.filter((cur) => {
-      if (cur.tag === tagValue) {
-        const valueObtained = cur.name;
-        return valueObtained;
-      }
-    })[0];
-    return noteValueObtained.name;
+  const onSuccessTag = () => {
+    setSelectedTag(null);
   };
 
   setTimeout(() => {
     setMessage(null);
   }, 1000);
 
-  const allNotes = useCallback(() => {
+  const getAllNotes = useCallback(() => {
     getNotes({ userId: userId, setNotes: setNotes });
   }, [userId]);
 
-  const allTags = useCallback(() => {
+  const getAllTags = useCallback(() => {
     getTags({ userId: userId, setTags: setTags });
   }, [userId]);
 
@@ -183,7 +156,7 @@ function App() {
                         : "border-violet-700 text-violet-700"
                     }`}
                     onClick={() => {
-                      allNotes();
+                      getAllNotes();
                       setDisplayAllNotes(true);
                       setDisplayAllTags(false);
                       setDisplayPostNoteForm(false);
@@ -202,7 +175,7 @@ function App() {
                         : "border-violet-700 text-violet-700"
                     }`}
                     onClick={() => {
-                      allTags();
+                      getAllTags();
                       setDisplayAllTags(true);
                       setDisplayAllNotes(false);
                       setDisplayPostNoteForm(false);
@@ -257,6 +230,7 @@ function App() {
                 !displayPostNoteForm && (
                   <NewTagForm
                     userId={userId}
+                    getAllTags={getAllTags}
                     setMessage={setMessage}
                     setDisplayPostTagForm={setDisplayPostTagForm}
                     setDisplayAllTags={setDisplayAllTags}
@@ -269,9 +243,9 @@ function App() {
                   <NewNoteForm
                     userId={userId}
                     tags={tags}
-                    setTags={setTags}
+                    // setTags={setTags}
+                    getAllNotes={getAllNotes}
                     setMessage={setMessage}
-                    getNotes={allNotes}
                     setDisplayNoteForm={setDisplayPostNoteForm}
                     setDisplayAllNotes={setDisplayAllNotes}
                   />
@@ -284,43 +258,27 @@ function App() {
                   <>
                     <Note
                       key={cur._id}
-                      content={cur.name}
-                      tag={tags.filter((curr) => curr._id === cur.tag)[0]}
-                      noteId={cur._id}
-                      setNoteId={setNoteId}
-                      updateNote={() => setDisplayUpdateNoteForm(true)}
+                      note={cur}
+                      tags={tags}
+                      setSelectedNote={setSelectedNote}
                       onDelete={() => {
-                        console.log(cur);
                         deleteNotes({
                           noteId: cur._id,
                           setMessage: setMessage,
                         });
                       }}
-                      getNotes={allNotes}
+                      getNotes={getAllNotes}
                     />
-                  </>
-                ))}
-              {displayUpdateNoteForm &&
-                !displayAllTags &&
-                !displayPostNoteForm &&
-                !displayPostTagForm &&
-                notes.map(
-                  (cur) =>
-                    cur._id === noteId && (
+                    {selectedNote && (
                       <UpdateNoteForm
-                        key={cur._id}
-                        userId={cur.user}
-                        noteId={noteId}
-                        tagId={cur.tag}
+                        note={selectedNote}
                         tags={tags}
-                        initialTag={cur.tag}
-                        initialNote={cur.name}
-                        setDisplayUpdateNoteForm={setDisplayUpdateNoteForm}
-                        getNotes={allNotes}
+                        onSuccess={onSuccessNote}
                         setMessage={setMessage}
                       />
-                    )
-                )}
+                    )}
+                  </>
+                ))}
               {displayAllTags &&
                 !displayAllNotes &&
                 !displayPostNoteForm &&
@@ -329,39 +287,25 @@ function App() {
                   <>
                     <Tag
                       key={cur._id}
-                      tagId={cur._id}
-                      setTagId={setTagId}
-                      content={cur.name}
-                      onUpdateTag={() => setDisplayUpdateTagForm(true)}
+                      tag={cur}
+                      setSelectedTag={setSelectedTag}
                       onDeleteTag={() => {
                         deleteTag({ tagId: cur._id, setMessage: setMessage });
                       }}
-                      getTags={allTags}
+                      getTags={getAllTags}
                     />
-                  </>
-                ))}
-              {displayUpdateTagForm &&
-                !displayAllNotes &&
-                !displayPostNoteForm &&
-                !displayPostTagForm &&
-                tags.map(
-                  (cur) =>
-                    cur._id === tagId && (
+                    {selectedTag && (
                       <UpdateTagForm
-                        key={cur._id}
-                        userId={cur.user}
-                        tagId={tagId}
-                        noteId={getNoteId(cur._id, notes)}
-                        noteValue={getNoteValue(cur.name, notes)}
-                        initialTag={cur.name}
+                        tag={selectedTag}
+                        onSuccess={onSuccessTag}
                         getTags={() =>
                           getTags({ userId: cur.user, setTags: setTags })
                         }
                         setMessage={setMessage}
-                        setDisplayUpdateTagForm={setDisplayUpdateTagForm}
                       />
-                    )
-                )}
+                    )}
+                  </>
+                ))}
             </section>
           </>
         )}

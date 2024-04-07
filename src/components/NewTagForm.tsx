@@ -3,6 +3,7 @@ import { postTag } from "../utils";
 
 type NewTagFormInput = {
   userId: string;
+  getAllTags: () => void;
   setDisplayPostTagForm: React.Dispatch<React.SetStateAction<boolean>>;
   setDisplayAllTags: React.Dispatch<React.SetStateAction<boolean>>;
   setMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -10,6 +11,7 @@ type NewTagFormInput = {
 
 export const NewTagForm = ({
   userId,
+  getAllTags,
   setDisplayPostTagForm,
   setDisplayAllTags,
   setMessage,
@@ -25,8 +27,9 @@ export const NewTagForm = ({
           newTag: { name: tagValue, user: userId },
           setMessage: setMessage,
         });
-        setDisplayPostTagForm(false);
         setTagValue("");
+        setDisplayPostTagForm(false);
+        getAllTags();
         setDisplayAllTags(true);
       }}
     >

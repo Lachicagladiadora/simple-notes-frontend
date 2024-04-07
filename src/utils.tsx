@@ -1,4 +1,4 @@
-import { NoteType, TagType } from "./App";
+import { NoteData, TagData } from "./App";
 import { DELETE, GET, POST, PUT } from "./fetch.utils";
 
 // SIGN UP
@@ -160,13 +160,13 @@ export const postTag = async ({ e, newTag, setMessage }: PostTagInput) => {
 
 type GetTagsInput = {
   userId: string;
-  setTags: React.Dispatch<React.SetStateAction<TagType[]>>;
+  setTags: React.Dispatch<React.SetStateAction<TagData[]>>;
 };
 
 export const getTags = async ({ userId, setTags }: GetTagsInput) => {
   console.log("getTag");
   try {
-    const response = await GET<TagType[]>(
+    const response = await GET<TagData[]>(
       `http://localhost:4000/api/v1/tag/user/${userId}`
     );
     setTags(response);
@@ -256,12 +256,12 @@ export const postNote = async ({ e, newNote, setMessage }: PostNoteInput) => {
 
 type GetNotesInput = {
   userId: string;
-  setNotes: React.Dispatch<React.SetStateAction<NoteType[]>>;
+  setNotes: React.Dispatch<React.SetStateAction<NoteData[]>>;
 };
 
 export const getNotes = async ({ userId, setNotes }: GetNotesInput) => {
   try {
-    const response = await GET<NoteType[]>(
+    const response = await GET<NoteData[]>(
       `http://localhost:4000/api/v1/note/user/${userId}`
     );
     setNotes(response);
